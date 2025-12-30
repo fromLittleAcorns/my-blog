@@ -1,0 +1,9 @@
+project:
+  output-dir: _docs
+
+website:
+  title: "my-blog"
+  site-url: "https://fromLittleAcorns.github.io/my-blog"
+  description: "A blog developed using fasthtml and nbdev"
+  repo-branch: main
+  repo-url: "https://github.com/fromLittleAcorns/my-blog"
