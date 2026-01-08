@@ -5,4 +5,4 @@ d = { 'settings': { 'branch': 'main',
                 'doc_host': 'https://fromLittleAcorns.github.io',
                 'git_url': 'https://github.com/fromLittleAcorns/my-blog',
                 'lib_path': 'my_blog'},
-  'syms': {'my_blog.core': {'my_blog.core.foo': ('core.html#foo', 'my_blog/core.py')}}}
+  'syms': {'my_blog.config': {}, 'my_blog.core': {'my_blog.core.foo': ('core.html#foo', 'my_blog/core.py')}}}
