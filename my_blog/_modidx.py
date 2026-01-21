@@ -5,4 +5,7 @@ d = { 'settings': { 'branch': 'main',
                 'doc_host': 'https://fromLittleAcorns.github.io',
                 'git_url': 'https://github.com/fromLittleAcorns/my-blog',
                 'lib_path': 'my_blog'},
-  'syms': {'my_blog.config': {}, 'my_blog.core': {'my_blog.core.tag_pill': ('core_dup3.html#tag_pill', 'my_blog/core.py')}}}
+  'syms': { 'my_blog.config': {},
+            'my_blog.core': { 'my_blog.core.get_post_tags': ('core_dup1.html#get_post_tags', 'my_blog/core.py'),
+                              'my_blog.core.get_posts': ('core_dup1.html#get_posts', 'my_blog/core.py'),
+                              'my_blog.core.tag_pill': ('core_dup1.html#tag_pill', 'my_blog/core.py')}}}
