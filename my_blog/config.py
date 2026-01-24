@@ -18,6 +18,7 @@ STATIC_DIR = Path(os.environ.get('STATIC_DIR', PROJECT_ROOT / 'static'))
 DATA_DIR = Path(os.environ.get('DATA_DIR', BASE_DIR / 'data'))
 IMAGE_DIR = STATIC_DIR / 'image'
 POST_IMAGE_DIR = IMAGE_DIR / 'post_images'
+TEST_DIR = Path(PROJECT_ROOT / 'test')
 
 # Ensure data directory exists
 DATA_DIR.mkdir(exist_ok=True)
