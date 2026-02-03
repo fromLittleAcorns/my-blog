@@ -1,0 +1,11 @@
+![[john_and_malvenia.jpeg]]
+My name is John Richmond.  I am married with two grown up daughters and four amazing grandchildren.  We live in the UK between Leicester and Coventry.  I developed this site to enable me to keep a record of things I have done and am interested in.  As such the primary topics include travelling in our motorhome with my wife Malvenia, cycling activities, coding, the application of AI  and technology. The AI development work is my way of continuing to stay up to date with this fast developing technology.  Before retiring I worked in a major pharma company looking to apply AI to drug discovery and development.  Prior to that I was responsible for advanced engineering in an automotive company and worked extensively upon the development of early electric and hybrid vehicles. Technology has always been a key part of my life and I retain a strong interest in it.
+
+This site is developed using a relatively new web technology [fastHTML](http://fasthtml.com) and the Solveit platform, both technologies developed by Jeremy Howard and [Answer.ai](https://answer.ai)'. fastHTML is a wan to develop fast, elegant websites directly from python using htmx.  It has a number of advantages compared to the more traditional javascript heavy site and is becoming increasingly popular.  The design is based upon the site of [Jack Hogan]('https://jackhogan.net/'),
+
+Below is a picture of our Motorhome, an Adria Compact DL.  We have had many adventures in her and hope to have many more over the coming years.  Last year we did a tour to the Italian Lakes and Switzerland via France and Germany.  I will document some of the places we stayed and things we did in the blog.
+![[IMG_9929.jpeg]]
+My cycling is nowadays mainly gravel riding.  I particularly like the events organised by [Glorious Gravel](hppts://gloriousgravel.com) and typically do quite a lot over the course of the year, often combining them with motorhome mini breaks in the area of the event.  My latest bike is an amazing [Vielo V+1 Race ediition](https://www.vielo.cc/pages/v1-gravel-bikes) (picture below)
+![[IMG_0376.jpeg]]
+
+See my latest blog posts below or find the full list on my Blog page
