@@ -90,6 +90,7 @@ def create_app():
     db = auth.initialize()  
     beforeware = auth.create_beforeware()
     hdrs = (*Theme.blue.headers(highlightjs=True), Script(src="https://unpkg.com/hyperscript.org@0.9.12"),
+        Script(src="https://strava-embeds.com/embed.js"),
         Link(rel="icon", type="image/png", href="/static/image/john_pixelated.png"))
     app = FastHTML(
         before=beforeware,
