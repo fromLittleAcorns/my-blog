@@ -90,7 +90,6 @@ def create_app():
     db = auth.initialize()  
     beforeware = auth.create_beforeware()
     hdrs = (*Theme.blue.headers(highlightjs=True), Script(src="https://unpkg.com/hyperscript.org@0.9.12"),
-        Script(src="https://strava-embeds.com/embed.js"),
         Link(rel="icon", type="image/png", href="/static/image/john_pixelated.png"))
     app = FastHTML(
         before=beforeware,
@@ -209,7 +208,11 @@ def blogpost(htmx, slug: str):
     if not p: return layout(H2("Not Found"), P("Post not found."), title="Not Found", htmx=htmx)
     p['created'] = datetime.fromisoformat(p['created']) if isinstance(p['created'], str) else p['created']
     content = render_md(p['content'])
-    return layout(H1(p['title'], cls="text-3xl font-bold mb-2"), Span(p['created'].strftime('%B %d, %Y'), cls="text-muted-foreground text-sm mb-8 block"), content, title=p['title'], htmx=htmx)
+    image_base = f"/static/image/post_images/{slug}"
+    content = process_obsidian_images(content, image_base=image_base)
+    content = process_strava_embeddings(content)
+    return layout(H1(p['title'], cls="text-3xl font-bold mb-2"), Span(p['created'].strftime('%B %d, %Y'), cls="text-muted-foreground text-sm mb-8 block"), content, 
+    Script(src="https://strava-embeds.com/embed.js"), title=p['title'], htmx=htmx)
 
 # %% ../nbs/03_blog_v3.ipynb #5899ca58
 @rt
@@ -248,7 +251,7 @@ def get_posts(n: Union[int, None]=None, tags: Union[List, None] = None):
         if n: query += f" LIMIT {n}"
         posts = state.pdb.q(query, tags)
     else:
-        posts = list(state.posts_t.rows_where("published = ?", [True], order_by="-created", limit=n))
+        posts = list(state.posts_t.rows_where("published = ?", [True], order_by="created DESC", limit=n))
         posts = [dict(r) for r in posts]
 
     for p in posts:
@@ -348,7 +351,10 @@ def process_upload(content: bytes, filename: str, slug:str=None):
         excerpt = post.metadata['excerpt']
         slug = title.lower().replace(" ", "-")
         slug = ''.join(c for c in slug if c.isalnum() or c == '-')[:60]
-        content_rewritten = rewrite_image_paths(post.content, slug)
+        # Convert obscidian image paths
+        content_rewritten = convert_obsidian_images(post.content, f"/static/image/post_images/{slug}")
+        # Convert normal markdown image paths
+        content_rewritten = rewrite_image_paths( content_rewritten, slug)
         post.content = content_rewritten
         try:
             add_post(title=title, content=post.content, excerpt=excerpt, tags=tags)
@@ -377,8 +383,8 @@ def get(htmx):
     # Create file upload form for the post
     return Div(Div(A('Cancel', href='/', cls=f"{ButtonT.secondary} px-4 py-2"), Upload("Upload Button!", id='upload1', multiple=True), cls='flex gap-2'),
                Div(id='upload-message'),
-               UploadZone(DivCentered(Span("Upload Zone"), UkIcon("upload")), id='upload2', accept='.md',
-               hx_target='#upload-message', hx_swop='innerHTML'),
+               UploadZone(DivCentered(Span("Upload Zone"), UkIcon("upload")), id='upload2', accept=['.md', '.jpg', '.jpeg', 'png', 'svg', 'gif'], multiple=True,
+               hx_target='#upload-message', hx_trigger='change', hx_post='/admin/upload', hx_swap='innerHTML', hx_include='#upload2', hx_encoding="multipart/form-data"),
                cls='space-y-4')
 
 # %% ../nbs/03_blog_v3.ipynb #2481df79
