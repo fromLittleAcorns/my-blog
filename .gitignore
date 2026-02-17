@@ -17,6 +17,8 @@ tags
 # Data
 my_blog/data
 
+# Post files
+static/image/post_images
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -101,6 +103,7 @@ celerybeat-schedule
 
 # dotenv
 .env
+.prod_env
 
 # virtualenv
 .venv

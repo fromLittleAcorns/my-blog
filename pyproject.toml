@@ -1,3 +1,30 @@
 [build-system]
-requires = ["setuptools>=64.0"]
+requires = ["setuptools>=64"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "my-blog"
+dynamic = ["version"]
+description = "A blog developed using fasthtml and nbdev"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "Apache-2.0"}
+authors = [{name = "John Richmond", email = "confusedjohn46@gmail.com"}]
+keywords = ['nbdev', 'jupyter', 'notebook', 'python']
+classifiers = ["Natural Language :: English", "Intended Audience :: Developers", "Development Status :: 3 - Alpha", "Programming Language :: Python :: 3", "Programming Language :: Python :: 3 :: Only"]
+dependencies = []
+
+[project.urls]
+Repository = "https://github.com/fromLittleAcorns/my-blog"
+Documentation = "https://fromLittleAcorns.github.io/my-blog"
+
+[project.entry-points.nbdev]
+my_blog = "my_blog._modidx:d"
+
+[tool.setuptools.dynamic]
+version = {attr = "my_blog.__version__"}
+
+[tool.setuptools.packages.find]
+include = ["my_blog"]
+
+[tool.nbdev]
