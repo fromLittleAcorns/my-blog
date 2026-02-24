@@ -213,7 +213,7 @@ def add_post(title, content, excerpt="", tags=None, published=True):
     else:
         post = posts.insert(dict(title=title, slug=slug, content=content, excerpt=excerpt, 
                                     created=datetime.now(), updated=datetime.now(), published=published))
-    post_id = post.id
+    post_id = post['id'] if isinstance(post, dict) else post.id    
     if tags:
         if isinstance(tags, str): tags = [tags]  # Handle string as single tag
         for tag in tags:
