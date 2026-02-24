@@ -2,9 +2,9 @@
 
 # %% auto #0
 __all__ = ['AppState', 'create_database_tables', 'create_post_database', 'create_app', 'route', 'register_routes', 'intro',
-           'hx_attrs', 'hx_link', 'navbar', 'x_icon', 'social_link', 'footer', 'layout', 'slug_exists', 'add_post',
-           'blogpost', 'index', 'get_tags', 'get_post_tags', 'get_posts', 'tag_pill', 'tag_filter', 'tag_badge', 'blog',
-           'get_post_image', 'post_card', 'process_upload', 'get', 'post', 'rewrite_image_paths',
+           'hx_attrs', 'hx_link', 'navbar', 'x_icon', 'social_link', 'footer', 'layout', 'slug_exists', 'get_slug',
+           'add_post', 'blogpost', 'index', 'get_tags', 'get_post_tags', 'get_posts', 'tag_pill', 'tag_filter',
+           'tag_badge', 'blog', 'get_post_image', 'post_card', 'process_upload', 'get', 'post', 'rewrite_image_paths',
            'convert_obsidian_images', 'load_md_file', 'about_content', 'about', 'strava_embed',
            'process_strava_embeddings', 'process_obsidian_images', 'EnhancedRenderer']
 
@@ -199,10 +199,16 @@ def slug_exists(slug):
     else:
         return False
 
-# %% ../nbs/05_blog_v5.ipynb #d14b4419
-def add_post(title, content, excerpt="", tags=None, published=True):
+# %% ../nbs/05_blog_v5.ipynb #954e2a1d
+def get_slug(title):
     slug = title.lower().replace(" ", "-")
     slug = ''.join(c for c in slug if c.isalnum() or c == '-')[:60]
+    return slug
+
+
+# %% ../nbs/05_blog_v5.ipynb #d14b4419
+def add_post(title, content, excerpt="", tags=None, published=True):
+    slug = get_slug(title)
     posts = state.pdb.t.posts
     tags_tbl = state.pdb.t.tags
     post_tags = state.pdb.t.post_tags
@@ -329,14 +335,15 @@ def blog(htmx, tags:str=None):
 
 # %% ../nbs/05_blog_v5.ipynb #4df85229
 def get_post_image(p):
-    # check post content for image (/static/image/post_images/*)
+    # check post content for image (/static/image/post_images/slug/*)
     # If image found then load a thumbnail of it
     img_ptn = r"!\[.*?\]\((/static/image/post_images/[^)]+)\)"
     imgs = re.findall(img_ptn,p["content"])
     img = imgs[0] if len(imgs)>0 else None
     if img:
         img_path = Path(img)
-        img_path = config.STATIC_DIR.parent / img_path
+        slug = get_slug(p['title'])
+        img_path = Path(config.POST_IMAGE_DIR) / Path(slug) / img_path
         return img_path
     else:
         return None
