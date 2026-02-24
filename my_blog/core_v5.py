@@ -200,8 +200,6 @@ def slug_exists(slug):
         return False
 
 # %% ../nbs/05_blog_v5.ipynb #d14b4419
-from datetime import datetime
-
 def add_post(title, content, excerpt="", tags=None, published=True):
     slug = title.lower().replace(" ", "-")
     slug = ''.join(c for c in slug if c.isalnum() or c == '-')[:60]
@@ -222,11 +220,11 @@ def add_post(title, content, excerpt="", tags=None, published=True):
             # Get existing tags
             existing = list(tags_tbl.rows_where("name = ?", [tag], limit=1))
             # If existing tag then load the relevant id.  If not then create a new one and get the id.
-            tag_id = existing[0]['id'] if existing else tags_tbl.insert(dict(name=tag))['id']
-            # Check if post_tags exists for this combination and if not add
-            existing = list(post_tags.rows_where("post_id= ? and tag_id= ?", [post_id, tag_id], limit=1))
-            # print(existing)
-            if not existing:
+            if existing:
+                tag_id = existing[0]['id']
+            else:
+                result = tags_tbl.insert(dict(name=tag))
+                tag_id = result['id'] if isinstance(result, dict) else result.id
                 # Implies no link exists for this post and tag so create one
                 post_tags.insert(dict(post_id=post_id, tag_id=tag_id))
     return post_id
