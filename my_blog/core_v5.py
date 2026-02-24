@@ -337,7 +337,7 @@ def blog(htmx, tags:str=None):
 def get_post_image(p):
     # check post content for image (/static/image/post_images/slug/*)
     # If image found then load a thumbnail of it
-    img_ptn = r"!\[.*?\]\((/static/image/post_images/[^)]+)\)"
+    img_ptn = r"!\[\[([^|\]]+?)(?:\|[^\]]+)?\]\]"
     imgs = re.findall(img_ptn,p["content"])
     img = imgs[0] if len(imgs)>0 else None
     if img:

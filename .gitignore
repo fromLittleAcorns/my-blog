@@ -16,6 +16,7 @@ tags
 
 # Data
 my_blog/data
+data/
 
 # Post files
 static/image/post_images
