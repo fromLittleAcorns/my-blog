@@ -91,8 +91,7 @@ def create_app():
     db = auth.initialize()
     # Set db password
     admin = auth.get_user(config.ADMIN_USERNAME)
-    if admin and config.ADMIN_PASSWORD:
-        auth.user_repo.update(admin.id, password=config.ADMIN_PASSWORD, email=config.ADMIN_EMAIL)
+    if admin and config.ADMIN_PASSWORD: auth.user_repo.update(admin.id, password=config.ADMIN_PASSWORD, email=config.ADMIN_EMAIL)
     beforeware = auth.create_beforeware()
     hdrs = (*Theme.blue.headers(highlightjs=True), Script(src="https://unpkg.com/hyperscript.org@0.9.12"),
         Link(rel="icon", type="image/png", href="/static/image/john_pixelated.png"))
