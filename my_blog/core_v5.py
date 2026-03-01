@@ -558,3 +558,7 @@ class EnhancedRenderer(FrankenRenderer):
         extra_attrs = ' target="_blank" rel="noopener noreferrer"' if self._is_external(target) else ''
         
         return f'<a href="{target}"{extra_attrs}>{inner}</a>'
+
+    def render_paragraph(self, token):
+        if self._suppress_ptag_stack[-1]: return self.render_inner(token)
+        return f'<p class="text-lg leading-relaxed mb-6">{self.render_inner(token)}</p>'
