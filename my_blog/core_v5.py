@@ -231,6 +231,7 @@ def add_post(title, content, excerpt="", tags=None, published=True):
                 result = tags_tbl.insert(dict(name=tag))
                 tag_id = result['id'] if isinstance(result, dict) else result.id
                 # Implies no link exists for this post and tag so create one
+            if not list(post_tags.rows_where("post_id = ? AND tag_id = ?", [post_id, tag_id])):
                 post_tags.insert(dict(post_id=post_id, tag_id=tag_id))
     return post_id
 
@@ -386,11 +387,12 @@ def process_upload(content: bytes, filename: str, slug:str=None):
             excerpt = post.metadata['excerpt']
             slug = title.lower().replace(" ", "-")
             slug = ''.join(c for c in slug if c.isalnum() or c == '-')[:60]
-            # Convert obscidian image paths
-            content_rewritten = convert_obsidian_images(post.content, f"/static/image/post_images/{slug}")
+            # Convert obscidian image paths (note that this and convert markdown paths are removes as the work is to be done 
+            # in process_obsidian+images
+            # content_rewritten = convert_obsidian_images(post.content, f"/static/image/post_images/{slug}")
             # Convert normal markdown image paths
-            content_rewritten = rewrite_image_paths( content_rewritten, slug)
-            post.content = content_rewritten
+            # content_rewritten = rewrite_image_paths( content_rewritten, slug)
+            # footerpost.content = content_rewritten
             try:
                 add_post(title=title, content=post.content, excerpt=excerpt, tags=tags)
             except Exception as e:
@@ -448,6 +450,7 @@ def post(upload2: list[UploadFile]):
 
 # %% ../nbs/05_blog_v5.ipynb #de66363e
 def rewrite_image_paths(content: str, slug: str) -> str:
+    # img_ptn = r"!\[.*?\]\((/static/image/post_images/[^)]+)\)"
     img_ptn = r"(!\[.*?\])\(([^/)]+\.(jpg|jpeg|png|gif|svg))\)"
     replacement = rf"\1(/static/image/post_images/{slug}/\2)"
     return re.sub(img_ptn, replacement, content, flags=re.IGNORECASE)
@@ -455,7 +458,8 @@ def rewrite_image_paths(content: str, slug: str) -> str:
 # %% ../nbs/05_blog_v5.ipynb #1ee544b2
 def convert_obsidian_images(content: str, image_base: str = "/static/image/about") -> str:
     """Convert Obsidian ![[image.ext]] syntax to standard markdown ![](/path/image.ext)"""
-    pattern = r'!\[\[([^\]]+\.(jpg|jpeg|png|gif|svg))\]\]'
+    # pattern = r'!\[\[([^\]]+\.(jpg|jpeg|png|gif|svg))\]\]'
+    pattern = r'!\[\[([^|\]\n]+\.(?:jpg|jpeg|png|gif|svg))(?:[\\|][^\]]+)?\]\]'
     replacement = rf'![]({image_base}/\1)'
     return re.sub(pattern, replacement, content, flags=re.IGNORECASE)
 
