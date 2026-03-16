@@ -321,12 +321,12 @@ def tag_badge(name):
 
 # %% ../nbs/05_blog_v5.ipynb #b0de129c
 @route
-def blog(htmx, tags:str=None):
+def blog(htmx, req, tags:str=None):
     # selected is a SET of the name of the selected tags
     selected = {unquote(t.strip()) for t in (tags or '').split(',') if t.strip()}
     filtered = get_posts(tags=selected)
     tag_filter_div = tag_filter(selected)
-    items = [post_card(p) for p in filtered]
+    items = [post_card(p, req) for p in filtered]
     post_content = Div(*items, cls="space-y-2", id="posts-list") if items else P("No posts yet.", cls="text-muted-foreground", id="posts-list")
     if htmx and htmx.target == "posts-list":
         tag_filter_div.attrs['hx-swap-oob'] = 'true'
@@ -349,7 +349,7 @@ def get_post_image(p):
         return None
 
 # %% ../nbs/05_blog_v5.ipynb #2de6b8cf
-def post_card(p):
+def post_card(p, req):
     """Create a card to view a summary of the post including
     - Title (linked)
     - Excerpt
@@ -358,6 +358,8 @@ def post_card(p):
     - Tags as small pills?
     - Hover effect?
     """
+    user = req.scope.get('user')
+    is_admin = user.role == 'admin'      # 'user', 'manager', or 'admin'
     img_url = get_post_image(p)
     post = Div(cls="flex gap-2 p-3 -mx-3 rounded-lg hover:bg-muted/50 hover:shadow-lg transition-all cursor-pointer")(
         Div(cls="flex-1")(
