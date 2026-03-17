@@ -4,8 +4,8 @@
 __all__ = ['AppState', 'create_database_tables', 'create_post_database', 'create_app', 'route', 'register_routes', 'intro',
            'hx_attrs', 'hx_link', 'navbar', 'x_icon', 'social_link', 'footer', 'layout', 'slug_exists', 'get_slug',
            'add_post', 'blogpost', 'index', 'get_tags', 'get_post_tags', 'get_posts', 'tag_pill', 'tag_filter',
-           'tag_badge', 'blog', 'get_post_image', 'post_card', 'process_upload', 'get', 'post', 'rewrite_image_paths',
-           'convert_obsidian_images', 'load_md_file', 'about_content', 'about', 'strava_embed',
+           'tag_badge', 'blog', 'get_post_image', 'check_if_admin', 'post_card', 'process_upload', 'get', 'post',
+           'rewrite_image_paths', 'convert_obsidian_images', 'load_md_file', 'about_content', 'about', 'strava_embed',
            'process_strava_embeddings', 'process_obsidian_images', 'EnhancedRenderer']
 
 # %% ../nbs/05_blog_v5.ipynb #6a381e96
@@ -348,32 +348,36 @@ def get_post_image(p):
     else:
         return None
 
-# %% ../nbs/05_blog_v5.ipynb #2de6b8cf
+# %% ../nbs/05_blog_v5.ipynb #7f1ad1ed
+def check_if_admin(req):
+    sess = req.scope.get('session', {})
+    auth_username = sess.get('auth')
+    user = state.auth.get_user(auth_username) if auth_username else None
+    check_admin = is_admin = user and user.role == 'admin'
+    return check_admin
+
+# %% ../nbs/05_blog_v5.ipynb #62ecd6cc
 def post_card(p, req):
-    """Create a card to view a summary of the post including
-    - Title (linked)
-    - Excerpt
-    - possible thumbnail image if one is in the post, to the right of the text
-    - Date
-    - Tags as small pills?
-    - Hover effect?
-    """
-    user = req.scope.get('user')
-    is_admin = user.role == 'admin'      # 'user', 'manager', or 'admin'
+    "Post summary card with optional admin controls"
+    is_admin = check_if_admin(req)
     img_url = get_post_image(p)
-    post = Div(cls="flex gap-2 p-3 -mx-3 rounded-lg hover:bg-muted/50 hover:shadow-lg transition-all cursor-pointer")(
+    slug = p['slug']
+    link_attrs = dict(href=f"/blog/{slug}", hx_get=f"/blog/{slug}", **hx_attrs())
+    admin_btns = Div(
+        A("Edit", href=f'/admin/edit/{slug}', cls="uk-btn uk-btn-default uk-btn-xs"),
+        Button("Delete", hx_post=f"/admin/delete/{p['slug']}", hx_confirm="Delete this post?", 
+            cls=["uk-btn uk-btn-default uk-btn-xs"]),
+        A("Download", href=f"/admin/download/{p['slug']}", cls=[ButtonT.default, "uk-btn-xs"]),
+        cls='flex gap-1'
+    ) if is_admin else Div()
+    return Div(cls="flex gap-4 p-3 -mx-3 rounded-lg border-b pb-4 hover:bg-muted/50 hover:shadow-lg transition-all")(
         Div(cls="flex-1")(
-            A(cls="flex gap-4 block border-b pb-4 transition-colors")(
-                Div(H3(p['title']), P(p['excerpt'], cls="text-muted-foreground"),  
-                Div(Span(p['created'].strftime('%d %b %Y'), cls="text-sm text-muted-foreground"), Div([tag_badge(tag) for tag in p["tags"]], cls="flex gap-2 flex-wrap")
-                )),
-                Img(src=img_url, cls="p-4 max-w-48 h-auto object-contain ml-auto") if img_url else None,
-                href=f"/blog/{p['slug']}",
-                hx_get=f"/blog/{p['slug']}", **hx_attrs()
-            )
-        )
-    )
-    return post
+            A(H3(p['title']), P(p['excerpt'], cls="text-muted-foreground"), **link_attrs),
+            Div(cls='flex justify-between items-center mt-2')(
+                Div(Span(p['created'].strftime('%d %b %Y'), cls="text-sm text-muted-foreground mr-2"),
+                    *[tag_badge(tag) for tag in p["tags"]], cls="flex items-center gap-2 flex-wrap"),
+                admin_btns)),
+        A(Img(src=img_url, cls="max-w-36 h-auto object-contain rounded"), **link_attrs) if img_url else None)
 
 # %% ../nbs/05_blog_v5.ipynb #924014d0
 def process_upload(content: bytes, filename: str, slug:str=None):
