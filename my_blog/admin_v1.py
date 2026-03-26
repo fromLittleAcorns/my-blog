@@ -105,7 +105,7 @@ def save_post(htmx, slug: str, raw_post: str, return_to_blog: bool = False):
         return Toast("Post saved :)", alert_cls=AlertT.info)
 
 
-# %% ../nbs/06_admin.ipynb #49caac2f
+# %% ../nbs/06_admin.ipynb #92c8d2d6
 @route('/admin/delete/{slug}')
 def delete_post(htmx, slug: str):
     p = load_post(slug)
@@ -119,11 +119,13 @@ def delete_post(htmx, slug: str):
 def download_post(slug: str):
     p = load_post(slug)
     if not p: return Response("Post not found", status_code=404)
-    fm = dict(title=p['title'], tags=p.get('tags', ''), excerpt=p.get('excerpt', ''), created=str(p['created']))
+    tag_rows = _state.pdb.q("""SELECT t.name FROM tags t JOIN post_tags pt ON t.id = pt.tag_id WHERE pt.post_id = ?""", [p['id']])
+    tags = [r['name'] for r in tag_rows]
+    fm = dict(title=p['title'], tags=tags, excerpt=p.get('excerpt', ''), created=str(p['created']))
     if p.get('updated'): fm['updated'] = str(p['updated'])
     post = frontmatter.Post(p['content'], **fm)
     md = frontmatter.dumps(post)
-    fname = f"{slug}.md"
+    fname = f"{p['title']}.md"
     return Response(md, media_type='text/markdown', headers={'Content-Disposition': f'attachment; filename="{fname}"'})
 
 # %% ../nbs/06_admin.ipynb #cfe582ab

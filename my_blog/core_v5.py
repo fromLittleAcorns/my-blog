@@ -3,10 +3,11 @@
 # %% auto #0
 __all__ = ['AppState', 'create_database_tables', 'create_post_database', 'create_app', 'route', 'register_routes', 'intro',
            'hx_attrs', 'hx_link', 'navbar', 'x_icon', 'social_link', 'footer', 'layout', 'slug_exists', 'get_slug',
-           'add_post', 'blogpost', 'index', 'get_tags', 'get_post_tags', 'get_posts', 'tag_pill', 'tag_filter',
-           'tag_badge', 'blog', 'get_post_image', 'check_if_admin', 'post_card', 'process_upload', 'get', 'post',
-           'rewrite_image_paths', 'convert_obsidian_images', 'load_md_file', 'about_content', 'about', 'strava_embed',
-           'process_strava_embeddings', 'process_obsidian_images', 'EnhancedRenderer']
+           'blogpost', 'index', 'get_tags', 'get_post_tags', 'get_posts', 'tag_pill', 'tag_filter', 'tag_badge', 'blog',
+           'get_post_image', 'check_if_admin', 'post_card', 'add_post', 'process_upload', 'get', 'save_pending',
+           'load_pending', 'clear_pending', 'do_upload', 'post', 'rewrite_image_paths', 'convert_obsidian_images',
+           'load_md_file', 'about_content', 'about', 'strava_embed', 'process_strava_embeddings',
+           'process_obsidian_images', 'EnhancedRenderer']
 
 # %% ../nbs/05_blog_v5.ipynb #6a381e96
 from fastlite import Database
@@ -187,6 +188,8 @@ def footer():
 
 # %% ../nbs/05_blog_v5.ipynb #e31ffc1b
 def layout(*content, htmx, title=None):
+    ''' title here is used to set the browser tab label in the <head> section and will not be visible on the page.  The article title is appended into the main content and shows below the navbar
+    '''
     if htmx and htmx.request: return (Title(title), *content)
     main = Main(*content, cls='w-full max-w-2xl mx-auto px-6 py-8 space-y-8', id="main-content")
     return Title(title), Div(Div(navbar(), cls='max-w-2xl mx-auto px-4 mt-4'), main, footer(), cls="flex flex-col min-h-screen")
@@ -205,39 +208,10 @@ def get_slug(title):
     return slug
 
 
-# %% ../nbs/05_blog_v5.ipynb #d14b4419
-def add_post(title, content, excerpt="", tags=None, published=True):
-    slug = get_slug(title)
-    posts = state.pdb.t.posts
-    tags_tbl = state.pdb.t.tags
-    post_tags = state.pdb.t.post_tags
-    post_id = slug_exists(slug)
-    if post_id:
-        post = posts.update(dict(id=post_id, title=title, slug=slug, content=content, excerpt=excerpt, 
-                                    created=datetime.now(), updated=datetime.now(), published=published))
-    else:
-        post = posts.insert(dict(title=title, slug=slug, content=content, excerpt=excerpt, 
-                                    created=datetime.now(), updated=datetime.now(), published=published))
-    post_id = post['id'] if isinstance(post, dict) else post.id    
-    if tags:
-        if isinstance(tags, str): tags = [tags]  # Handle string as single tag
-        for tag in tags:
-            # Get existing tags
-            existing = list(tags_tbl.rows_where("name = ?", [tag], limit=1))
-            # If existing tag then load the relevant id.  If not then create a new one and get the id.
-            if existing:
-                tag_id = existing[0]['id']
-            else:
-                result = tags_tbl.insert(dict(name=tag))
-                tag_id = result['id'] if isinstance(result, dict) else result.id
-                # Implies no link exists for this post and tag so create one
-            if not list(post_tags.rows_where("post_id = ? AND tag_id = ?", [post_id, tag_id])):
-                post_tags.insert(dict(post_id=post_id, tag_id=tag_id))
-    return post_id
-
 # %% ../nbs/05_blog_v5.ipynb #91dae216
 @route('/blog/{slug}')
-def blogpost(htmx, slug: str):
+def blogpost(htmx, req, slug: str):
+    is_admin = check_if_admin(req)
     row = state.posts_t.rows_where("slug = ?", [slug], limit=1)
     p = next((dict(r) for r in row), None)
     if not p: return layout(H2("Not Found"), P("Post not found."), title="Not Found", htmx=htmx)
@@ -246,8 +220,17 @@ def blogpost(htmx, slug: str):
     image_base = f"/static/image/post_images/{slug}"
     content = process_obsidian_images(content, image_base=image_base)
     content = process_strava_embeddings(content)
+    admin_btns = Div(
+        A("Edit", href=f'/admin/edit/{slug}', cls="uk-btn uk-btn-default uk-btn-xs"),
+        # Button("Delete", hx_post=f"/admin/delete/{p['slug']}", hx_confirm="Delete this post?", 
+        #    cls=["uk-btn uk-btn-default uk-btn-xs"]),
+        Button("Delete", hx_post=f"/admin/delete/{slug}", hx_confirm="Delete this post?", 
+            hx_swap="innerHTML", cls="uk-btn uk-btn-default uk-btn-xs"),
+        A("Download", href=f"/admin/download/{p['slug']}", cls=[ButtonT.default, "uk-btn-xs"]),
+        cls='flex gap-1'
+    ) if is_admin else Div()
     return layout(H1(p['title'], cls="text-3xl font-bold mb-2"), Span(p['created'].strftime('%B %d, %Y'), cls="text-muted-foreground text-sm mb-8 block"), content, 
-    Script(src="https://strava-embeds.com/embed.js"), title=p['title'], htmx=htmx)
+    admin_btns, Script(src="https://strava-embeds.com/embed.js"), title=p['title'], htmx=htmx)
 
 # %% ../nbs/05_blog_v5.ipynb #a1c2acd2
 @route
@@ -365,8 +348,11 @@ def post_card(p, req):
     link_attrs = dict(href=f"/blog/{slug}", hx_get=f"/blog/{slug}", **hx_attrs())
     admin_btns = Div(
         A("Edit", href=f'/admin/edit/{slug}', cls="uk-btn uk-btn-default uk-btn-xs"),
-        Button("Delete", hx_post=f"/admin/delete/{p['slug']}", hx_confirm="Delete this post?", 
-            cls=["uk-btn uk-btn-default uk-btn-xs"]),
+        # Button("Delete", hx_post=f"/admin/delete/{p['slug']}", hx_confirm="Delete this post?", 
+        #    cls=["uk-btn uk-btn-default uk-btn-xs"]),
+        Button("Delete", hx_post=f"/admin/delete/{slug}", hx_confirm="Delete this post?", 
+            hx_target="#main-content", hx_swap="innerHTML", 
+            cls="uk-btn uk-btn-default uk-btn-xs"),
         A("Download", href=f"/admin/download/{p['slug']}", cls=[ButtonT.default, "uk-btn-xs"]),
         cls='flex gap-1'
     ) if is_admin else Div()
@@ -379,48 +365,67 @@ def post_card(p, req):
                 admin_btns)),
         A(Img(src=img_url, cls="max-w-36 h-auto object-contain rounded"), **link_attrs) if img_url else None)
 
-# %% ../nbs/05_blog_v5.ipynb #924014d0
-def process_upload(content: bytes, filename: str, slug:str=None):
-    # check there is no parent path element and if so just get the filename part
+# %% ../nbs/05_blog_v5.ipynb #b0f1fe99
+def add_post(title, content, excerpt="", tags=None, published=True, created=None, updated=None):
+    slug = get_slug(title)
+    posts = state.pdb.t.posts
+    tags_tbl = state.pdb.t.tags
+    post_tags = state.pdb.t.post_tags
+    now = datetime.now()
+    post_id = slug_exists(slug)
+    if post_id:
+        post = posts.update(dict(id=post_id, title=title, slug=slug, content=content, excerpt=excerpt,
+                                 created=created or now, updated=now, published=published))
+    else:
+        post = posts.insert(dict(title=title, slug=slug, content=content, excerpt=excerpt,
+                                 created=created or now, updated=updated or now, published=published))
+    post_id = post['id'] if isinstance(post, dict) else post.id
+    if tags:
+        if isinstance(tags, str): tags = [tags]
+        for tag in tags:
+            existing = list(tags_tbl.rows_where("name = ?", [tag], limit=1))
+            if existing: tag_id = existing[0]['id']
+            else:
+                result = tags_tbl.insert(dict(name=tag))
+                tag_id = result['id'] if isinstance(result, dict) else result.id
+            if not list(post_tags.rows_where("post_id = ? AND tag_id = ?", [post_id, tag_id])):
+                post_tags.insert(dict(post_id=post_id, tag_id=tag_id))
+    return post_id
+
+# %% ../nbs/05_blog_v5.ipynb #f75481a2
+def process_upload(content: bytes, filename: str, slug:str=None, overwrite: bool=False):
     file_path = Path(filename)
     if file_path.suffix == '.md':
         try:
-            # post content, extract metadata and save contents to posts table
             md_text = content.decode('utf-8')
             post = frontmatter.loads(md_text)
             title = post.metadata['title']
             tags = post.metadata['tags']
             excerpt = post.metadata['excerpt']
-            slug = title.lower().replace(" ", "-")
-            slug = ''.join(c for c in slug if c.isalnum() or c == '-')[:60]
-            # Convert obscidian image paths (note that this and convert markdown paths are removes as the work is to be done 
-            # in process_obsidian+images
-            # content_rewritten = convert_obsidian_images(post.content, f"/static/image/post_images/{slug}")
-            # Convert normal markdown image paths
-            # content_rewritten = rewrite_image_paths( content_rewritten, slug)
-            # footerpost.content = content_rewritten
+            created = post.metadata.get('created')
+            updated = post.metadata.get('updated')
+            # Get the slug from the post if it exists, if not then create a slug
+            slug = post.metadata.get('slug') or get_slug(title)
+            if not overwrite and slug_exists(slug):
+                return 'confirm', "Post already exists. Overwrite?", slug
             try:
-                add_post(title=title, content=post.content, excerpt=excerpt, tags=tags)
+                if overwrite:
+                    update_post(slug=slug, title=title, content=post.content, excerpt=excerpt, tags=tags, updated=updated)
+                else:
+                    add_post(title=title, content=post.content, excerpt=excerpt, tags=tags, created=created, updated=updated)
             except Exception as e:
-                success = False
-                message = f"Unable to save post: {e}"
                 print(f'Error on save attempt: {e}')
-                return success, message, None
+                return False, f"Unable to save post: {e}", None
             return True, "Post saved", slug
         except Exception as e:
             return False, f"Error processing md: {type(e).__name__}: {e}", None
-
     elif file_path.suffix in ['.jpg', '.png', '.jpeg', '.tif', '.svg']:
-        # file is an image, save to image folder
         path_to_save = Path(config.POST_IMAGE_DIR) / Path(slug) / file_path.name
-        # Create directory if it doen't exist
         path_to_save.parent.mkdir(parents=True, exist_ok=True)
         path_to_save.write_bytes(content)
         return True, f"File {path_to_save.name} saved", slug
-
     else:
-        # unknown file type, raise an error Toast
-        return False, f"Unknown file type {filepath.suffix}", slug
+        return False, f"Unknown file type {file_path.suffix}", slug
 
 # %% ../nbs/05_blog_v5.ipynb #ec27541d
 @route('/admin/upload')
@@ -434,25 +439,66 @@ def get(htmx):
                 cls='space-y-4')
     )
 
-# %% ../nbs/05_blog_v5.ipynb #f1455440
-@route('/admin/upload')    
-def post(upload2: list[UploadFile]):
-    files = [(f.filename, f.file.read()) for f in upload2]
-    md_files = [(n, c) for n, c in files if n.endswith('.md')]
-    img_files = [(n, c) for n, c in files if not n.endswith('.md')]
+# %% ../nbs/05_blog_v5.ipynb #ffe86d0d
+def save_pending(slug: str, md_name: str, md_content: bytes, images: list[tuple[str, bytes]]):
+    """Save md content and images to temp storage keyed by slug.
+    images is a list of (filename, bytes) tuples."""
+    import pickle
+    Path(f'/tmp/pending_{slug}.pkl').write_bytes(pickle.dumps({'name': 'md_name', 'md': md_content, 'images': images}))
+
+# %% ../nbs/05_blog_v5.ipynb #4d043c1a
+def load_pending(slug: str):
+    """Returns (md_content, images) or None if not found."""
+    import pickle
+    p = Path(f'/tmp/pending_{slug}.pkl')
+    if not p.exists(): return None
+    data = pickle.loads(p.read_bytes())
+    return data['name'], data['md'], data['images']
+
+# %% ../nbs/05_blog_v5.ipynb #9fb636a4
+def clear_pending(slug: str):
+    Path(f'/tmp/pending_{slug}.pkl').unlink(missing_ok=True)
+
+# %% ../nbs/05_blog_v5.ipynb #67efba69
+def do_upload(md_files, img_files, overwrite=False):
     results = []
     slug = None
-    if img_files and len(md_files)==0:
-        return Div(Alert("Please upload a post (.md file) with images, or upload images separately", cls=AlertT.warning))
     for name, content in md_files:
-        success, message, slug = process_upload(content, name)
+        success, message, slug = process_upload(content, name, overwrite=overwrite)
+        if success == 'confirm':
+            save_pending(slug, name, content, img_files)
+            return 'confirm', slug
         results.append((name, success, message))
     for name, content in img_files:
         success, message, _ = process_upload(content, name, slug=slug)
         results.append((name, success, message))
-    header = ["Name", 'Success', 'Message']
-    body = [[r[0], r[1], r[2]] for r in results]
-    return Div(H2("Post upload results"), TableFromLists(header, body))
+    header = ["Name", "Success", "Message"]
+    return 'done', TableFromLists(header, [[r[0], r[1], r[2]] for r in results])
+
+# %% ../nbs/05_blog_v5.ipynb #f5cc3377
+@route('/admin/upload')
+def post(upload2: list[UploadFile]):
+    files = [(f.filename, f.file.read()) for f in upload2]
+    md_files = [(n, c) for n, c in files if n.endswith('.md')]
+    img_files = [(n, c) for n, c in files if not n.endswith('.md')]
+    status, result = do_upload(md_files, img_files)
+    if status == 'confirm':
+        slug = result
+        # return a confirmation dialog - result is the slug
+        return Div(P("Post already exists. Overwrite?"),
+                   Button("Yes, overwrite", hx_post=f"/admin/upload/overwrite?slug={slug}", hx_target="#upload-message", hx_swap="innerHTML"),
+                   Button("Cancel", cls=ButtonT.secondary, hx_get="/admin/upload", hx_target="#upload-message", hx_swap="innerHTML"))
+    return Div(H2("Upload results"), result)
+
+# %% ../nbs/05_blog_v5.ipynb #461bf991
+@route('/admin/upload/overwrite')
+def post(slug: str):
+    pending = load_pending(slug)
+    if not pending: return Alert("No pending upload found", cls=AlertT.warning)
+    md_name, md_content, img_files = pending
+    status, result = do_upload([(md_name, md_content)], img_files, overwrite=True)
+    clear_pending(slug)
+    return Div(H2("Upload results"), result)
 
 # %% ../nbs/05_blog_v5.ipynb #de66363e
 def rewrite_image_paths(content: str, slug: str) -> str:
