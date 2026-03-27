@@ -366,8 +366,9 @@ def post_card(p, req):
         A(Img(src=img_url, cls="max-w-36 h-auto object-contain rounded"), **link_attrs) if img_url else None)
 
 # %% ../nbs/05_blog_v5.ipynb #b0f1fe99
-def add_post(title, content, excerpt="", tags=None, published=True, created=None, updated=None):
-    slug = get_slug(title)
+def add_post(title, content, excerpt="", tags=None, published=True, created=None, updated=None, slug: str=None):
+    if not slug:
+        slug = get_slug(title)
     posts = state.pdb.t.posts
     tags_tbl = state.pdb.t.tags
     post_tags = state.pdb.t.post_tags
@@ -410,7 +411,7 @@ def process_upload(content: bytes, filename: str, slug:str=None, overwrite: bool
                 return 'confirm', "Post already exists. Overwrite?", slug
             try:
                 if overwrite:
-                    update_post(slug=slug, title=title, content=post.content, excerpt=excerpt, tags=tags, updated=updated)
+                    add_post(slug=slug, title=title, content=post.content, excerpt=excerpt, tags=tags, updated=updated)
                 else:
                     add_post(title=title, content=post.content, excerpt=excerpt, tags=tags, created=created, updated=updated)
             except Exception as e:
@@ -444,7 +445,7 @@ def save_pending(slug: str, md_name: str, md_content: bytes, images: list[tuple[
     """Save md content and images to temp storage keyed by slug.
     images is a list of (filename, bytes) tuples."""
     import pickle
-    Path(f'/tmp/pending_{slug}.pkl').write_bytes(pickle.dumps({'name': 'md_name', 'md': md_content, 'images': images}))
+    Path(f'/tmp/pending_{slug}.pkl').write_bytes(pickle.dumps({'name': md_name, 'md': md_content, 'images': images}))
 
 # %% ../nbs/05_blog_v5.ipynb #4d043c1a
 def load_pending(slug: str):
@@ -460,11 +461,12 @@ def clear_pending(slug: str):
     Path(f'/tmp/pending_{slug}.pkl').unlink(missing_ok=True)
 
 # %% ../nbs/05_blog_v5.ipynb #67efba69
-def do_upload(md_files, img_files, overwrite=False):
+def do_upload(md_files, img_files, slug: str=None, overwrite: bool=False):
     results = []
-    slug = None
     for name, content in md_files:
-        success, message, slug = process_upload(content, name, overwrite=overwrite)
+        success, message, slug_from_title = process_upload(content, name, overwrite=overwrite)
+        if not slug:
+            slug = slug_from_title
         if success == 'confirm':
             save_pending(slug, name, content, img_files)
             return 'confirm', slug
@@ -496,7 +498,7 @@ def post(slug: str):
     pending = load_pending(slug)
     if not pending: return Alert("No pending upload found", cls=AlertT.warning)
     md_name, md_content, img_files = pending
-    status, result = do_upload([(md_name, md_content)], img_files, overwrite=True)
+    status, result = do_upload([(md_name, md_content)], img_files, slug=slug, overwrite=True)
     clear_pending(slug)
     return Div(H2("Upload results"), result)
 
