@@ -63,3 +63,10 @@ DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 HOST = os.getenv("HOST", "0.0.0.0")
 PORT = int(os.getenv("PORT", "5000"))
 RELOAD = DEBUG
+
+# ============================================
+# Analytics Settings
+# ============================================
+
+ANALYTICS_ENABLED = os.getenv("ANALYTICS_ENABLED", "false")
+

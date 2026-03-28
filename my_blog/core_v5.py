@@ -95,6 +95,8 @@ def create_app():
     if admin and config.ADMIN_PASSWORD: auth.user_repo.update(admin.id, password=config.ADMIN_PASSWORD, email=config.ADMIN_EMAIL)
     beforeware = auth.create_beforeware()
     hdrs = (*Theme.blue.headers(highlightjs=True), Script(src="https://unpkg.com/hyperscript.org@0.9.12"),
+        Script(src="https://www.googletagmanager.com/gtag/js?id=G-DP7YB96KHH", async_=True),
+        Script("window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-DP7YB96KHH');"),
         Link(rel="icon", type="image/png", href="/static/image/john_pixelated.png"))
     app = FastHTML(
         before=beforeware,
