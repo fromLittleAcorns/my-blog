@@ -619,3 +619,7 @@ class EnhancedRenderer(FrankenRenderer):
     def render_paragraph(self, token):
         if self._suppress_ptag_stack[-1]: return self.render_inner(token)
         return f'<p class="text-lg leading-relaxed mb-6">{self.render_inner(token)}</p>'
+
+# %% ../nbs/05_blog_v5.ipynb #cf0669ad
+@route('/googleada316577537ad2b.html')
+def get(): return 'google-site-verification: googleada316577537ad2b.html'
