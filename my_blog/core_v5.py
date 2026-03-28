@@ -7,7 +7,7 @@ __all__ = ['AppState', 'create_database_tables', 'create_post_database', 'create
            'get_post_image', 'check_if_admin', 'post_card', 'add_post', 'process_upload', 'get', 'save_pending',
            'load_pending', 'clear_pending', 'do_upload', 'post', 'rewrite_image_paths', 'convert_obsidian_images',
            'load_md_file', 'about_content', 'about', 'strava_embed', 'process_strava_embeddings',
-           'process_obsidian_images', 'EnhancedRenderer']
+           'process_obsidian_images', 'EnhancedRenderer', 'sitemap']
 
 # %% ../nbs/05_blog_v5.ipynb #6a381e96
 from fastlite import Database
@@ -625,3 +625,18 @@ class EnhancedRenderer(FrankenRenderer):
 # %% ../nbs/05_blog_v5.ipynb #cf0669ad
 @route('/googleada316577537ad2b.html')
 def get(): return 'google-site-verification: googleada316577537ad2b.html'
+
+# %% ../nbs/05_blog_v5.ipynb #b47e6237
+@route('/sitemap.xml')
+def sitemap():
+    slug_list = state.pdb.q("""SELECT p.slug FROM posts p ORDER BY p.created""")
+    slug_list = [slug['slug'] for slug in slug_list]
+    base = "https://blog.therichmond4.co.uk"
+    static_urls = ["/", "/about", "/blog"]
+    urls = static_urls + [f"/blog/{slug}" for slug in slug_list]
+    xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+    xml += "\n".join(f"  <url><loc>{base}{u}</loc></url>" for u in urls)
+    xml += "\n</urlset>"
+    return Response(xml, media_type="application/xml")
+
+
