@@ -85,7 +85,7 @@ def create_app():
         db_path=str(config.USERS_DB_PATH),
         config={
             'allow_registration': config.ALLOW_REGISTRATION,
-            'public_paths': ['/', '/about', r'/blog.*', r'/post.*', '/googleada316577537ad2b.html'],  # Let anybody see the site apart from the admin and auth routes
+            'public_paths': ['/', '/about', r'/blog.*', r'/post.*', '/googleada316577537ad2b.html', '/sitemap.xml'],  # Let anybody see the site apart from the admin and auth routes
             'login_path': '/auth/login',
         }
     )
