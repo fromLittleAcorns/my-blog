@@ -2,12 +2,12 @@
 
 # %% auto #0
 __all__ = ['AppState', 'create_database_tables', 'create_post_database', 'create_app', 'route', 'register_routes', 'intro',
-           'hx_attrs', 'hx_link', 'navbar', 'x_icon', 'social_link', 'footer', 'layout', 'slug_exists', 'get_slug',
-           'blogpost', 'index', 'get_tags', 'get_post_tags', 'get_posts', 'tag_pill', 'tag_filter', 'tag_badge', 'blog',
-           'get_post_image', 'check_if_admin', 'post_card', 'add_post', 'process_upload', 'get', 'save_pending',
-           'load_pending', 'clear_pending', 'do_upload', 'post', 'rewrite_image_paths', 'convert_obsidian_images',
-           'load_md_file', 'about_content', 'about', 'strava_embed', 'process_strava_embeddings',
-           'process_obsidian_images', 'EnhancedRenderer', 'sitemap']
+           'hx_attrs', 'hx_link', 'is_logged_in', 'navbar', 'x_icon', 'social_link', 'footer', 'layout', 'slug_exists',
+           'get_slug', 'blogpost', 'index', 'get_tags', 'get_post_tags', 'get_posts', 'tag_pill', 'tag_filter',
+           'tag_badge', 'blog', 'get_post_image', 'check_if_admin', 'post_card', 'add_post', 'process_upload', 'get',
+           'save_pending', 'load_pending', 'clear_pending', 'do_upload', 'post', 'rewrite_image_paths',
+           'convert_obsidian_images', 'load_md_file', 'about_content', 'about', 'strava_embed',
+           'process_strava_embeddings', 'process_obsidian_images', 'EnhancedRenderer', 'sitemap']
 
 # %% ../nbs/05_blog_v5.ipynb #6a381e96
 from fastlite import Database
@@ -44,8 +44,9 @@ def create_database_tables(pdb: Database):
         updated: datetime
         published: bool
         excerpt: str
+        private: bool
 
-    posts = pdb.create(Posts, pk='id', defaults={'published': False}, transform=True)
+    posts = pdb.create(Posts, pk='id', defaults={'published': False, 'private':False}, transform=True)
     posts.create_index(['slug'], unique=True, if_not_exists=True)
 
     class Tags:
@@ -162,10 +163,22 @@ def hx_attrs(target="#main-content"): return dict(hx_target=target, hx_push_url=
 def hx_link(txt, href, cls="text-primary underline", target="#main-content", **kw):
     return A(txt, href=href, hx_get=href, cls=cls, **hx_attrs(target), **kw)
 
+# %% ../nbs/05_blog_v5.ipynb #d09ae8e2
+def is_logged_in(req):
+    auth_user_name = req.scope.get('session', {}).get('auth')
+    return True if auth_user_name else False
+
+
 # %% ../nbs/05_blog_v5.ipynb #1f69321c
-def navbar():
+def navbar(req):
+    # Check if logged in user
+    logged_in = is_logged_in(req)
+    if logged_in:
+        log_link = hx_link(UkIcon("user"), "/auth/logout") 
+    else:
+        log_link = hx_link(UkIcon('log-in'), "/auth/login")
     brand = A(Img(src="/static/image/john_pixelated.png", alt="John Richmond", cls="w-6 h-6 rounded-full"), Span("John Richmond "), href="/", hx_get="/", cls="flex items-center gap-2 text-lg font-bold", **hx_attrs())
-    links = Div(hx_link("About", "/about"), hx_link("Blog", "/blog"), cls="flex gap-4")
+    links = Div(hx_link("About", "/about"), hx_link("Blog", "/blog"), log_link, cls="flex gap-4 items-center")
     return Nav(Div(brand, links, cls="flex items-center gap-2 justify-between p-4"), cls="border rounded-lg shadow bg-background")
 
 # %% ../nbs/05_blog_v5.ipynb #991ad9c7
@@ -189,12 +202,12 @@ def footer():
     return Footer(Divider(), icons, cls="max-w-2xl mx-auto px-6 mt-auto mb-6")
 
 # %% ../nbs/05_blog_v5.ipynb #e31ffc1b
-def layout(*content, htmx, title=None):
+def layout(req, *content, htmx, title=None):
     ''' title here is used to set the browser tab label in the <head> section and will not be visible on the page.  The article title is appended into the main content and shows below the navbar
     '''
     if htmx and htmx.request: return (Title(title), *content)
     main = Main(*content, cls='w-full max-w-2xl mx-auto px-6 py-8 space-y-8', id="main-content")
-    return Title(title), Div(Div(navbar(), cls='max-w-2xl mx-auto px-4 mt-4'), main, footer(), cls="flex flex-col min-h-screen")
+    return Title(title), Div(Div(navbar(req), cls='max-w-2xl mx-auto px-4 mt-4'), main, footer(), cls="flex flex-col min-h-screen")
 
 # %% ../nbs/05_blog_v5.ipynb #80c4cbeb
 def slug_exists(slug):
@@ -214,9 +227,11 @@ def get_slug(title):
 @route('/blog/{slug}')
 def blogpost(htmx, req, slug: str):
     is_admin = check_if_admin(req)
+    logged_in = is_logged_in(req)
     row = state.posts_t.rows_where("slug = ?", [slug], limit=1)
     p = next((dict(r) for r in row), None)
-    if not p: return layout(H2("Not Found"), P("Post not found."), title="Not Found", htmx=htmx)
+    if not p or (p.get('private') and not logged_in(req)): 
+        return layout(req, H2("Not Found"), P("Post not found."), title="Not Found", htmx=htmx)
     p['created'] = datetime.fromisoformat(p['created']) if isinstance(p['created'], str) else p['created']
     content = render_md(p['content'], renderer=EnhancedRenderer)
     image_base = f"/static/image/post_images/{slug}"
@@ -231,16 +246,17 @@ def blogpost(htmx, req, slug: str):
         A("Download", href=f"/admin/download/{p['slug']}", cls=[ButtonT.default, "uk-btn-xs"]),
         cls='flex gap-1'
     ) if is_admin else Div()
-    return layout(H1(p['title'], cls="text-3xl font-bold mb-2"), Span(p['created'].strftime('%B %d, %Y'), cls="text-muted-foreground text-sm mb-8 block"), content, 
+    return layout(req, H1(p['title'], cls="text-3xl font-bold mb-2"), Span(p['created'].strftime('%B %d, %Y'), cls="text-muted-foreground text-sm mb-8 block"), content, 
     admin_btns, Script(src="https://strava-embeds.com/embed.js"), title=p['title'], htmx=htmx)
 
 # %% ../nbs/05_blog_v5.ipynb #a1c2acd2
 @route
-def index(htmx):
-    posts = get_posts(n=4)
+def index(req, htmx):
+    logged_in = is_logged_in(req)
+    posts = get_posts(n=4, logged_in=logged_in)
     items = [A(H3(p['title']), P(p['excerpt'], cls="text-muted-foreground"), Span(p['created'].strftime('%d %b %Y'), cls="text-sm text-muted-foreground"), href=f"/blog/{p['slug']}", hx_get=f"/blog/{p['slug']}", cls="block border-b pb-4 hover:bg-muted/50 transition-colors", **hx_attrs()) for p in posts]
     content = Div(*items, cls="space-y-4") if items else P("No posts yet.", cls="text-muted-foreground")
-    return layout((intro(), Divider(), Section(H3("Latest Posts", cls="text-xl font-semibold mb-4"), content)), title="Welcome to my Blog", htmx=htmx)
+    return layout(req, (intro(), Divider(), Section(H3("Latest Posts", cls="text-xl font-semibold mb-4"), content)), title="Welcome to my Blog", htmx=htmx)
 
 # %% ../nbs/05_blog_v5.ipynb #514f8dc1
 def get_tags(tags_tbl):
@@ -258,20 +274,21 @@ def get_post_tags(post_id: int):
     return tag_names
 
 # %% ../nbs/05_blog_v5.ipynb #add61721
-def get_posts(n: Union[int, None]=None, tags: Union[List, None] = None):
+def get_posts(n: Union[int, None]=None, tags: Union[List, None] = None, logged_in: bool=False):
     if tags:
         place_holders = ','.join('?' * len(tags))
+        private_posts_query = '' if logged_in else 'AND p.private = False '
         query = f"""
             SELECT DISTINCT p.* FROM posts p
             JOIN post_tags pt ON p.id = pt.post_id
             JOIN tags t ON pt.tag_id = t.id
-            WHERE t.name IN ({place_holders}) AND p.published = True
+            WHERE t.name IN ({place_holders}) AND p.published = True {private_posts_query}
             ORDER BY p.created DESC
         """
         if n: query += f" LIMIT {n}"
         posts = state.pdb.q(query, tags)
     else:
-        posts = list(state.posts_t.rows_where("published = ?", [True], order_by="created DESC", limit=n))
+        posts = list(state.posts_t.rows_where("published = ? AND (private = False OR ?)", [True, logged_in], order_by="created DESC", limit=n))
         posts = [dict(r) for r in posts]
 
     for p in posts:
@@ -307,16 +324,17 @@ def tag_badge(name):
 # %% ../nbs/05_blog_v5.ipynb #b0de129c
 @route
 def blog(htmx, req, tags:str=None):
+    logged_in = is_logged_in(req)
     # selected is a SET of the name of the selected tags
     selected = {unquote(t.strip()) for t in (tags or '').split(',') if t.strip()}
-    filtered = get_posts(tags=selected)
+    filtered = get_posts(tags=selected, logged_in=logged_in)
     tag_filter_div = tag_filter(selected)
     items = [post_card(p, req) for p in filtered]
     post_content = Div(*items, cls="space-y-2", id="posts-list") if items else P("No posts yet.", cls="text-muted-foreground", id="posts-list")
     if htmx and htmx.target == "posts-list":
         tag_filter_div.attrs['hx-swap-oob'] = 'true'
         return post_content, tag_filter_div
-    return layout(H2("Blog"), tag_filter_div, Divider(cls=('my-2')), post_content, title="Blog", htmx=htmx)
+    return layout(req, H2("Blog"), tag_filter_div, Divider(cls=('my-2')), post_content, title="Blog", htmx=htmx)
 
 # %% ../nbs/05_blog_v5.ipynb #4df85229
 def get_post_image(p):
@@ -368,7 +386,7 @@ def post_card(p, req):
         A(Img(src=img_url, cls="max-w-36 h-auto object-contain rounded"), **link_attrs) if img_url else None)
 
 # %% ../nbs/05_blog_v5.ipynb #b0f1fe99
-def add_post(title, content, excerpt="", tags=None, published=True, created=None, updated=None, slug: str=None):
+def add_post(title, content, excerpt="", tags=None, published=True, created=None, updated=None, slug: str=None, private: bool=False):
     if not slug:
         slug = get_slug(title)
     posts = state.pdb.t.posts
@@ -378,10 +396,10 @@ def add_post(title, content, excerpt="", tags=None, published=True, created=None
     post_id = slug_exists(slug)
     if post_id:
         post = posts.update(dict(id=post_id, title=title, slug=slug, content=content, excerpt=excerpt,
-                                 created=created or now, updated=now, published=published))
+                                 created=created or now, updated=now, published=published, private=private))
     else:
         post = posts.insert(dict(title=title, slug=slug, content=content, excerpt=excerpt,
-                                 created=created or now, updated=updated or now, published=published))
+                                 created=created or now, updated=updated or now, published=published, private=private))
     post_id = post['id'] if isinstance(post, dict) else post.id
     if tags:
         if isinstance(tags, str): tags = [tags]
@@ -407,15 +425,16 @@ def process_upload(content: bytes, filename: str, slug:str=None, overwrite: bool
             excerpt = post.metadata['excerpt']
             created = post.metadata.get('created')
             updated = post.metadata.get('updated')
+            private = post.metadata.get('private', False)
             # Get the slug from the post if it exists, if not then create a slug
             slug = post.metadata.get('slug') or get_slug(title)
             if not overwrite and slug_exists(slug):
                 return 'confirm', "Post already exists. Overwrite?", slug
             try:
                 if overwrite:
-                    add_post(slug=slug, title=title, content=post.content, excerpt=excerpt, tags=tags, updated=updated)
+                    add_post(slug=slug, title=title, content=post.content, excerpt=excerpt, tags=tags, updated=updated, private=private)
                 else:
-                    add_post(title=title, content=post.content, excerpt=excerpt, tags=tags, created=created, updated=updated)
+                    add_post(title=title, content=post.content, excerpt=excerpt, tags=tags, created=created, updated=updated, private=private)
             except Exception as e:
                 print(f'Error on save attempt: {e}')
                 return False, f"Unable to save post: {e}", None
@@ -533,8 +552,8 @@ def about_content():
 
 # %% ../nbs/05_blog_v5.ipynb #cd6f7060
 @route
-def about(htmx):
-    return layout(about_content(),title="About Me", htmx=htmx)
+def about(req, htmx):
+    return layout(req, about_content(),title="About Me", htmx=htmx)
 
 # %% ../nbs/05_blog_v5.ipynb #ab467a70
 def strava_embed(activity_id: str):

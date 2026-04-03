@@ -57,11 +57,11 @@ def register_admin_routes(app, state):
 
 # %% ../nbs/06_admin.ipynb #c80f0a64
 @route('/admin/edit/{slug}')
-def post_edit(htmx, slug: str):
+def post_edit(req, htmx, slug: str):
     # Load post content from database
     p = load_post(slug)
     if not post:
-        return layout(H2("Not Found"), P("Post not found."), title="Not Found", htmx=htmx)
+        return layout(req, H2("Not Found"), P("Post not found."), title="Not Found", htmx=htmx)
     content = p['content']
 
     # Create edit page components and layout including textarea, output div, buttons for cancel, full_preview, save, save and return
@@ -84,7 +84,7 @@ def post_edit(htmx, slug: str):
         ),
         Hidden(name='slug', value=slug)
     )
-    return edit_layout(H1(p['title'], cls="text-3xl font-bold mb-2"), Span(p['created'].strftime('%B %d, %Y'), cls="text-muted-foreground text-sm mb-8 block"), 
+    return edit_layout(req, H1(p['title'], cls="text-3xl font-bold mb-2"), Span(p['created'].strftime('%B %d, %Y'), cls="text-muted-foreground text-sm mb-8 block"), 
         frm, title=p['title'], htmx=htmx)
 
     # 
@@ -122,6 +122,7 @@ def download_post(slug: str):
     tag_rows = _state.pdb.q("""SELECT t.name FROM tags t JOIN post_tags pt ON t.id = pt.tag_id WHERE pt.post_id = ?""", [p['id']])
     tags = [r['name'] for r in tag_rows]
     fm = dict(title=p['title'], tags=tags, excerpt=p.get('excerpt', ''), created=str(p['created']))
+    fm['private'] = p.get('private', False)
     if p.get('updated'): fm['updated'] = str(p['updated'])
     post = frontmatter.Post(p['content'], **fm)
     md = frontmatter.dumps(post)
@@ -175,7 +176,7 @@ def load_post(slug):
     return p
 
 # %% ../nbs/06_admin.ipynb #40ef7dac
-def edit_layout(*content, htmx, title=None):
+def edit_layout(req, *content, htmx, title=None):
     if htmx and htmx.request: return (Title(title), *content)
     main = Main(*content, cls='w-full max-w-full px-8 mx-auto py-8 space-y-8', id="main-content")
-    return Title(title), Div(Div(navbar(), cls='max-w-full px-8 mx-auto mt-4'), main, footer(), cls="flex flex-col min-h-screen")
+    return Title(title), Div(Div(navbar(req), cls='max-w-full px-8 mx-auto mt-4'), main, footer(), cls="flex flex-col min-h-screen")
