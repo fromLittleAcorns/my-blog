@@ -33,9 +33,13 @@ POSTS_DB_NAME = os.environ.get('POSTS_DB_NAME', 'posts.db')
 POSTS_DB_PATH = DATA_DIR / POSTS_DB_NAME
 
 # ============================================
+# OAUTH
+# ============================================
+OAUTH_REDIRECT = os.environ.get('OAUTH_REDIRECT_URL', None)
+
+# ============================================
 # Security
 # ============================================
-
 SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-key-CHANGE-IN-PRODUCTION")
 
 # Session configuration
