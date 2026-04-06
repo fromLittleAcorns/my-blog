@@ -151,7 +151,7 @@ def logout(sess):
     """
     print("MY LOGOUT CALLED")
     sess.clear()
-    return RedirectResponse(f"/", status_code=303)
+    return Response(status_code=200, headers={"HX-Redirect": "/"})
 
 
 # %% ../nbs/05_blog_v5.ipynb #7e9d1570
@@ -172,6 +172,7 @@ def intro():
 def hx_attrs(target="#main-content"): return dict(hx_target=target, hx_push_url="true", hx_swap="innerHTML show:window:top")
 
 def hx_link(txt, href, cls="text-primary underline", target="#main-content", **kw):
+    # Utility function to configure the update of the target (by default the #main-content) using hx_get. Falls back to html if not htmx
     return A(txt, href=href, hx_get=href, cls=cls, **hx_attrs(target), **kw)
 
 # %% ../nbs/05_blog_v5.ipynb #d09ae8e2
@@ -187,7 +188,7 @@ def navbar(req):
     if logged_in:
         log_link = hx_link(UkIcon("user"), "/admin/logout") 
     else:
-        log_link = hx_link(UkIcon('log-in'), "/auth/login")
+        log_link = A(UkIcon('log-in'), href="/auth/login", cls="uk-button uk-button-default uk-button-xs")
     brand = A(Img(src="/static/image/john_pixelated.png", alt="John Richmond", cls="w-6 h-6 rounded-full"), Span("John Richmond "), href="/", hx_get="/", cls="flex items-center gap-2 text-lg font-bold", **hx_attrs())
     links = Div(hx_link("About", "/about"), hx_link("Blog", "/blog"), log_link, cls="flex gap-4 items-center")
     return Nav(Div(brand, links, cls="flex items-center gap-2 justify-between p-4"), cls="border rounded-lg shadow bg-background")
@@ -653,10 +654,6 @@ class EnhancedRenderer(FrankenRenderer):
     def render_paragraph(self, token):
         if self._suppress_ptag_stack[-1]: return self.render_inner(token)
         return f'<p class="text-lg leading-relaxed mb-6">{self.render_inner(token)}</p>'
-
-# %% ../nbs/05_blog_v5.ipynb #cf0669ad
-@route('/googleada316577537ad2b.html')
-def get(): return 'google-site-verification: googleada316577537ad2b.html'
 
 # %% ../nbs/05_blog_v5.ipynb #b47e6237
 @route('/sitemap.xml')
