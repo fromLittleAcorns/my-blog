@@ -658,7 +658,7 @@ class EnhancedRenderer(FrankenRenderer):
 # %% ../nbs/05_blog_v5.ipynb #b47e6237
 @route('/sitemap.xml')
 def sitemap():
-    slug_list = state.pdb.q("""SELECT p.slug FROM posts p ORDER BY p.created WHERE p.private = False""")
+    slug_list = state.pdb.q("""SELECT p.slug FROM posts p WHERE p.private = False ORDER BY p.created""")
     slug_list = [slug['slug'] for slug in slug_list]
     base = "https://blog.therichmond4.co.uk"
     static_urls = ["/", "/about", "/blog"]

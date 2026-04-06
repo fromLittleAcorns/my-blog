@@ -4,6 +4,10 @@
 __all__ = ['route', 'register_admin_routes', 'require_admin', 'post_edit', 'save_post', 'delete_post', 'download_post',
            'replace_iframe', 'replace_strava', 'post', 'load_post', 'edit_layout']
 
+# %% ../nbs/06_admin.ipynb #79e79759
+from nbdev.showdoc import *
+import nbdev
+
 # %% ../nbs/06_admin.ipynb #cf45be0a
 from fastlite import Database
 from pathlib import Path
