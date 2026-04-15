@@ -4,10 +4,11 @@
 __all__ = ['AppState', 'create_database_tables', 'create_post_database', 'create_app', 'route', 'register_routes', 'logout',
            'intro', 'hx_attrs', 'hx_link', 'is_logged_in', 'navbar', 'x_icon', 'social_link', 'footer', 'layout',
            'slug_exists', 'get_slug', 'blogpost', 'index', 'get_tags', 'get_post_tags', 'get_posts', 'tag_pill',
-           'tag_filter', 'tag_badge', 'blog', 'get_post_image', 'check_if_admin', 'post_card', 'add_post',
-           'process_upload', 'get', 'save_pending', 'load_pending', 'clear_pending', 'do_upload', 'post',
-           'rewrite_image_paths', 'convert_obsidian_images', 'load_md_file', 'about_content', 'about', 'strava_embed',
-           'process_strava_embeddings', 'process_obsidian_images', 'EnhancedRenderer', 'sitemap']
+           'tag_filter', 'tag_badge', 'decode_tag_str', 'sentinal', 'blog', 'get_more_posts', 'get_post_image',
+           'check_if_admin', 'post_card', 'add_post', 'process_upload', 'get', 'save_pending', 'load_pending',
+           'clear_pending', 'do_upload', 'post', 'rewrite_image_paths', 'convert_obsidian_images', 'load_md_file',
+           'about_content', 'about', 'strava_embed', 'process_strava_embeddings', 'process_obsidian_images',
+           'EnhancedRenderer', 'sitemap']
 
 # %% ../nbs/05_blog_v5.ipynb #6a381e96
 from fastlite import Database
@@ -33,18 +34,19 @@ class AppState:
     db: Database # For managing users and authorising access
 
 # %% ../nbs/05_blog_v5.ipynb #1b911c99
-def create_database_tables(pdb: Database):
+def create_database_tables(pdb: Database # database to save posts and all associated tag tables
+    ): 
 
     class Posts:
         id: int # primary key
-        title: str
-        slug: str # unique
-        content: str
-        created: datetime
-        updated: datetime
-        published: bool
-        excerpt: str
-        private: bool
+        title: str # post title
+        slug: str # unique slug based upon title
+        content: str # The post content in markdown
+        created: datetime # date and time created
+        updated: datetime # date and time modified
+        published: bool # is post published
+        excerpt: str # short summary of the post
+        private: bool # post only visible to logged in users
 
     posts = pdb.create(Posts, pk='id', defaults={'published': False, 'private':False}, transform=True)
     posts.create_index(['slug'], unique=True, if_not_exists=True)
@@ -66,7 +68,8 @@ def create_database_tables(pdb: Database):
 
 
 # %% ../nbs/05_blog_v5.ipynb #95894ac6
-def create_post_database(db_path: str):
+def create_post_database(db_path: str # path to posts database
+                        )-> Database: # Creates all the required database tables if they don't already exist
     pdb = Database(db_path)
     pdb.execute("PRAGMA foreign_keys = ON")
     create_database_tables(pdb)
@@ -161,7 +164,7 @@ def intro():
         Div(cls="text-base gap-1 text-muted-foreground leading-relaxed space-y-4")(
         P("I created this site to keep a record of things I am interested in.  As such it will largely cover motorhome trips, cycling events and routes that I have done and enjoyed, coding and software development activities I am interested in or engaged with, and technology that I think is worth looking at.  You can find out more about me on my ", hx_link("About", "/about"), " page"),
 
-        P("This site is developed using fastHTML and the Solveit platform, both technologies developed by Jeremy Howard and ",A('Answer.ai', href='https://answer.ai', target="_blank", rel="noopener noreferrer", cls="text-primary underline"), " The desgn is based upon the site of ", A('Jack Hogan.', href='https://jackhogan.net/', target="_blank", rel="noopener noreferrer", cls="text-primary underline"),
+        P("This site is developed using fastHTML and the Solveit platform, both technologies developed by Jeremy Howard and ",A('Answer.ai', href='https://answer.ai', target="_blank", rel="noopener noreferrer", cls="text-primary underline"), " The desgn was originally based upon the site of ", A('Jack Hogan.', href='https://jackhogan.net/', target="_blank", rel="noopener noreferrer", cls="text-primary underline"), "but has evolved to be database driven for both users and posts, as well as to incorporate infinite scroll amongst other things"
 
         " See my latest blog posts below or find the full list on my ", hx_link("Blog", "/blog"), " page, where posts can be readily filtered by topic.")
         )
@@ -182,7 +185,7 @@ def is_logged_in(req):
 
 
 # %% ../nbs/05_blog_v5.ipynb #1f69321c
-def navbar(req):
+def navbar(req: Request):
     # Check if logged in user
     logged_in = is_logged_in(req)
     if logged_in:
@@ -267,7 +270,7 @@ def blogpost(htmx, req, slug: str):
 @route
 def index(req, htmx):
     logged_in = is_logged_in(req)
-    posts = get_posts(n=4, logged_in=logged_in)
+    posts = get_posts(n=6, logged_in=logged_in)
     items = [A(H3(p['title']), P(p['excerpt'], cls="text-muted-foreground"), Span(p['created'].strftime('%d %b %Y'), cls="text-sm text-muted-foreground"), href=f"/blog/{p['slug']}", hx_get=f"/blog/{p['slug']}", cls="block border-b pb-4 hover:bg-muted/50 transition-colors", **hx_attrs()) for p in posts]
     content = Div(*items, cls="space-y-4") if items else P("No posts yet.", cls="text-muted-foreground")
     return layout(req, (intro(), Divider(), Section(H3("Latest Posts", cls="text-xl font-semibold mb-4"), content)), title="Welcome to my Blog", htmx=htmx)
@@ -287,8 +290,13 @@ def get_post_tags(post_id: int):
     tag_names = [name['name'] for name in tag_name_dicts]
     return tag_names
 
-# %% ../nbs/05_blog_v5.ipynb #add61721
-def get_posts(n: Union[int, None]=None, tags: Union[List, None] = None, logged_in: bool=False):
+# %% ../nbs/05_blog_v5.ipynb #31e79c0d
+def get_posts(
+        n: Union[int, None]=None, # number of posts to load
+        tags: Union[List, None] = None, # list of tags
+        logged_in: bool=False, # is user logged in
+        offset: Union [int, None]=None # where to start to load posts once ordered
+        )->list: # list of posts
     if tags:
         place_holders = ','.join('?' * len(tags))
         private_posts_query = '' if logged_in else 'AND p.private = False '
@@ -300,9 +308,11 @@ def get_posts(n: Union[int, None]=None, tags: Union[List, None] = None, logged_i
             ORDER BY p.created DESC
         """
         if n: query += f" LIMIT {n}"
+        if offset: query += f" OFFSET {offset}"
         posts = state.pdb.q(query, tags)
     else:
-        posts = list(state.posts_t.rows_where("published = ? AND (private = False OR ?)", [True, logged_in], order_by="created DESC", limit=n))
+        posts = list(state.posts_t.rows_where("published = ? AND (private = False OR ?)", [True, logged_in], 
+            order_by="created DESC", limit=n, offset=offset))
         posts = [dict(r) for r in posts]
 
     for p in posts:
@@ -335,20 +345,62 @@ def tag_filter(selected):
 def tag_badge(name):
     return Span(name, cls="text-xs px-2 py-1 rounded bg-muted")
 
-# %% ../nbs/05_blog_v5.ipynb #b0de129c
+# %% ../nbs/05_blog_v5.ipynb #82972f75
+def decode_tag_str(tag_str: str):
+    # Decode a string containing a list of items with comma separation, needed to decode a list sent as a url parameter. 
+    # Returns a set of unique items
+    selected = {unquote(t.strip()) for t in (tag_str or '').split(',') if t.strip()}
+    return selected
+
+# %% ../nbs/05_blog_v5.ipynb #6ef80d65
+def sentinal(
+        n:int, # number of posts to load
+        offset:int=None, # where to start the load
+        tags: str=None # a list of active tags separated by commas
+        )->Div: # Div to add to the end of the list of posts to act as a sentinal
+    " Create a div to add to the end of the posts on the blog. When it becomes visible then it activates the load of more posts"
+    get_str = f"/loadmore?offset={offset}&n={n}"
+    if tags: 
+        get_str += f"&tags={tags}"
+    sentinal = Div(
+        hx_get=get_str,    
+        hx_trigger="intersect once",
+        hx_swap="outerHTML",
+        hx_target="this"
+    )
+    return sentinal
+
+# %% ../nbs/05_blog_v5.ipynb #a29d4fec
 @route
 def blog(htmx, req, tags:str=None):
     logged_in = is_logged_in(req)
+    posts_to_load = 10
     # selected is a SET of the name of the selected tags
-    selected = {unquote(t.strip()) for t in (tags or '').split(',') if t.strip()}
-    filtered = get_posts(tags=selected, logged_in=logged_in)
+    selected = decode_tag_str(tags)
+    filtered = get_posts(n=posts_to_load, tags=selected, logged_in=logged_in)
     tag_filter_div = tag_filter(selected)
     items = [post_card(p, req) for p in filtered]
+    if len(items) == posts_to_load:
+        items.append(sentinal(offset=posts_to_load, n=posts_to_load, tags=tags))
     post_content = Div(*items, cls="space-y-2", id="posts-list") if items else P("No posts yet.", cls="text-muted-foreground", id="posts-list")
     if htmx and htmx.target == "posts-list":
         tag_filter_div.attrs['hx-swap-oob'] = 'true'
         return post_content, tag_filter_div
     return layout(req, H2("Blog"), tag_filter_div, Divider(cls=('my-2')), post_content, title="Blog", htmx=htmx)
+
+# %% ../nbs/05_blog_v5.ipynb #3851743c
+@route("/loadmore")
+def get_more_posts(req, n: int, offset: int, tags: str=None):
+    logged_in = is_logged_in(req)
+    selected_tags = decode_tag_str(tags)
+    posts = get_posts(n=n, tags=selected_tags, logged_in=logged_in, offset=offset)
+    items = [post_card(p, req) for p in posts]
+    if len(items) == n:
+        new_sentinal = sentinal(offset=offset+n, n=n, tags=tags)
+        return (*items, new_sentinal)
+    return (*items,)
+
+
 
 # %% ../nbs/05_blog_v5.ipynb #4df85229
 def get_post_image(p):
