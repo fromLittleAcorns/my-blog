@@ -463,6 +463,7 @@ def add_post(title, content, excerpt="", tags=None, published=True, created=None
     if post_id:
         post = posts.update(dict(id=post_id, title=title, slug=slug, content=content, excerpt=excerpt,
                                  created=created or now, updated=now, published=published, private=private))
+        state.pdb.execute("DELETE FROM post_tags WHERE post_id = ?", [post_id])
     else:
         post = posts.insert(dict(title=title, slug=slug, content=content, excerpt=excerpt,
                                  created=created or now, updated=updated or now, published=published, private=private))

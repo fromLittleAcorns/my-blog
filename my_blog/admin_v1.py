@@ -115,8 +115,13 @@ def delete_post(req,htmx, slug: str):
     if err := require_admin(req): return err
     p = load_post(slug)
     if not p: return Toast("Post not found", alert_cls=AlertT.error)
-    try: _state.posts_t.delete(p['id'])
-    except Exception as e: return Toast(f"Unable to delete: {e}", alert_cls=AlertT.error)
+    try:
+        operation = "deleting post tags"
+        _state.pdb.execute("DELETE FROM post_tags WHERE post_id = ?", [p['id']])
+        operation = "deleting post"
+        _state.posts_t.delete(p['id'])
+    except Exception as e:
+        return Toast(f"Error {e} with operation: {operation}", alert_cls=AlertT.error)
     return HtmxResponseHeaders(redirect='/blog')
 
 # %% ../nbs/06_admin.ipynb #62ddff27
