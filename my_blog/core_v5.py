@@ -721,9 +721,9 @@ https?://(?:www\.)?(?:youtu\.be/|youtube\.com/watch\?v=)(?P<index>[A-Za-z0-9_-]{
 '''
         for match in re.finditer(pattern_vb, page, re.MULTILINE+re.VERBOSE):
             video_id = match['index']
-            iframe = Iframe(src=f"https://www.youtube.com/embed/{video_id}", title="YouTube video player", frameborder="0",
+            iframe = Iframe(src=f"https://www.youtube-nocookie.com/embed/{video_id}", title="YouTube video player", frameborder="0",
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share",
-                            referrerpolicy="strict-origin-when-cross-origin", allowfullscreen=True, cls="w-full aspect-video rounded-lg my-6")
+                            referrerpolicy="no-referrer-when-downgrade", allowfullscreen=True, cls="w-full aspect-video rounded-lg my-6")
             iframe = to_xml(iframe)
             page = page.replace(match.group(0), iframe)
         return NotStr(page)
