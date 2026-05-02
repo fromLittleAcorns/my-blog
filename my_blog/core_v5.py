@@ -7,8 +7,8 @@ __all__ = ['AppState', 'create_database_tables', 'create_post_database', 'create
            'tag_filter', 'tag_badge', 'decode_tag_str', 'sentinal', 'blog', 'get_more_posts', 'get_post_image',
            'check_if_admin', 'post_card', 'add_post', 'process_upload', 'get', 'save_pending', 'load_pending',
            'clear_pending', 'do_upload', 'post', 'rewrite_image_paths', 'convert_obsidian_images', 'load_md_file',
-           'about_content', 'about', 'strava_embed', 'process_strava_embeddings', 'process_obsidian_images',
-           'EnhancedRenderer', 'sitemap']
+           'about_content', 'about', 'EnhancedRenderer', 'strava_embed', 'process_strava_embeddings',
+           'process_obsidian_images', 'process_you_tube_embed', 'sitemap']
 
 # %% ../nbs/05_blog_v5.ipynb #6a381e96
 from fastlite import Database
@@ -254,6 +254,7 @@ def blogpost(htmx, req, slug: str):
     image_base = f"/static/image/post_images/{slug}"
     content = process_obsidian_images(content, image_base=image_base)
     content = process_strava_embeddings(content)
+    content = process_you_tube_embed(content)
     admin_btns = Div(
         A("Edit", href=f'/admin/edit/{slug}', cls="uk-btn uk-btn-default uk-btn-xs"),
         # Button("Delete", hx_post=f"/admin/delete/{p['slug']}", hx_confirm="Delete this post?", 
@@ -622,6 +623,38 @@ def about_content():
 def about(req, htmx):
     return layout(req, about_content(),title="About Me", htmx=htmx)
 
+# %% ../nbs/05_blog_v5.ipynb #b49fbacf
+from mistletoe import Document
+from monsterui.franken import FrankenRenderer
+
+# %% ../nbs/05_blog_v5.ipynb #71f9e091
+class EnhancedRenderer(FrankenRenderer):
+    def _is_external(self, url):
+        return url.startswith(('http://', 'https://', '//'))
+
+    def render_link(self, token):
+        target = self.escape_url(token.target)      
+        title = f' title="{self.escape_html(token.title)}"' if token.title else ''
+        inner = self.render_inner(token)
+
+        # Determine if we need the new tab attributes
+        extra_attrs = ' target="_blank" rel="noopener noreferrer"' if self._is_external(target) else ''
+
+        return f'<a href="{target}"{extra_attrs}{title}>{inner}</a>'
+
+    def render_autolink(self, token):
+        target = self.escape_url(token.target)
+        inner = self.render_inner(token)
+        
+        # Autolinks are almost always external, but we'll check anyway
+        extra_attrs = ' target="_blank" rel="noopener noreferrer"' if self._is_external(target) else ''
+        
+        return f'<a href="{target}"{extra_attrs}>{inner}</a>'
+
+    def render_paragraph(self, token):
+        if self._suppress_ptag_stack[-1]: return self.render_inner(token)
+        return f'<p class="text-lg leading-relaxed mb-6">{self.render_inner(token)}</p>'
+
 # %% ../nbs/05_blog_v5.ipynb #ab467a70
 def strava_embed(activity_id: str):
     return Div(cls="strava-embed-placeholder", data_embed_type="activity", data_embed_id=activity_id, data_style="standard")
@@ -676,37 +709,24 @@ def process_obsidian_images(page: NotStr, image_base: str) -> NotStr:
     
     return NotStr(page)
 
-# %% ../nbs/05_blog_v5.ipynb #4a284972
-from mistletoe import Document
-from monsterui.franken import FrankenRenderer
-
-# %% ../nbs/05_blog_v5.ipynb #71f9e091
-class EnhancedRenderer(FrankenRenderer):
-    def _is_external(self, url):
-        return url.startswith(('http://', 'https://', '//'))
-
-    def render_link(self, token):
-        target = self.escape_url(token.target)      
-        title = f' title="{self.escape_html(token.title)}"' if token.title else ''
-        inner = self.render_inner(token)
-
-        # Determine if we need the new tab attributes
-        extra_attrs = ' target="_blank" rel="noopener noreferrer"' if self._is_external(target) else ''
-
-        return f'<a href="{target}"{extra_attrs}{title}>{inner}</a>'
-
-    def render_autolink(self, token):
-        target = self.escape_url(token.target)
-        inner = self.render_inner(token)
-        
-        # Autolinks are almost always external, but we'll check anyway
-        extra_attrs = ' target="_blank" rel="noopener noreferrer"' if self._is_external(target) else ''
-        
-        return f'<a href="{target}"{extra_attrs}>{inner}</a>'
-
-    def render_paragraph(self, token):
-        if self._suppress_ptag_stack[-1]: return self.render_inner(token)
-        return f'<p class="text-lg leading-relaxed mb-6">{self.render_inner(token)}</p>'
+# %% ../nbs/05_blog_v5.ipynb #7ccb6366
+def process_you_tube_embed(page: NotStr):
+        page = str(page)
+        pattern_vb  = r'''
+(<p[^>]*?>)? # find and capture <p> if it is there.  Allows for intermediate characters after p but only up to >
+(\s*)?(<a[^>]*?>) # Find the <a and any href and class values up to the first >.  Optional
+https?://(?:www\.)?(?:youtu\.be/|youtube\.com/watch\?v=)(?P<index>[A-Za-z0-9_-]{11}) # Catch the index of the youtube video
+(</a>)? # Catch the terminating a tag if it exists
+(</p>)? # Catch the terminating p tag if it exists
+'''
+        for match in re.finditer(pattern_vb, page, re.MULTILINE+re.VERBOSE):
+            video_id = match['index']
+            iframe = Iframe(src=f"https://www.youtube.com/embed/{video_id}", title="YouTube video player", frameborder="0",
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share",
+                            referrerpolicy="strict-origin-when-cross-origin", allowfullscreen=True, cls="w-full aspect-video rounded-lg my-6")
+            iframe = to_xml(iframe)
+            page = page.replace(match.group(0), iframe)
+        return NotStr(page)
 
 # %% ../nbs/05_blog_v5.ipynb #b47e6237
 @route('/sitemap.xml')
