@@ -8,7 +8,7 @@ __all__ = ['yt_hdrs', 'AppState', 'create_database_tables', 'create_post_databas
            'get_post_image', 'check_if_admin', 'post_card', 'add_post', 'process_upload', 'get', 'save_pending',
            'load_pending', 'clear_pending', 'do_upload', 'post', 'rewrite_image_paths', 'convert_obsidian_images',
            'load_md_file', 'about_content', 'about', 'EnhancedRenderer', 'strava_embed', 'process_strava_embeddings',
-           'process_obsidian_images', 'process_you_tube_embed', 'sitemap']
+           'process_komoot_embed', 'process_obsidian_images', 'process_you_tube_embed', 'sitemap']
 
 # %% ../nbs/05_blog_v5.ipynb #6a381e96
 from fastlite import Database
@@ -279,6 +279,7 @@ def blogpost(htmx, req, slug: str):
     image_base = f"/static/image/post_images/{slug}"
     content = process_obsidian_images(content, image_base=image_base)
     content = process_strava_embeddings(content)
+    content = process_komoot_embed(content)
     content = process_you_tube_embed(content)
     admin_btns = Div(
         A("Edit", href=f'/admin/edit/{slug}', cls="uk-btn uk-btn-default uk-btn-xs"),
@@ -695,6 +696,26 @@ def process_strava_embeddings(page: NotStr):
         return to_xml(strava_embed(activity_id))
     
     page = re.sub(pattern_placeholder, replace_strava, page)
+    return NotStr(page)
+
+# %% ../nbs/05_blog_v5.ipynb #c71cf180
+def process_komoot_embed(page: NotStr):
+    page = str(page)
+    pattern = r'(<p[^>]*>)?\s*\{\{komoot:(\d+)\|([A-Za-z0-9]+)(?:\|(gallery|classic))?\}\}\s*(</p>)?'
+    
+    def replace_komoot(match):
+        tour_id = match.group(2)
+        share_token = match.group(3)
+        layout = match.group(4) or 'classic'
+        if layout == 'gallery':
+            src = f"https://www.komoot.com/tour/{tour_id}/embed?share_token={share_token}&layout=gallery&gallery=1"
+            height = "640"
+        else:
+            src = f"https://www.komoot.com/tour/{tour_id}/embed?share_token={share_token}&layout=classic&profile=1"
+            height = "700"
+        return f'<iframe src="{src}" width="100%" height="{height}" frameborder="0" scrolling="no"></iframe>'
+    
+    page = re.sub(pattern, replace_komoot, page)
     return NotStr(page)
 
 # %% ../nbs/05_blog_v5.ipynb #ffe15f8f
