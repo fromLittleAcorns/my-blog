@@ -1,0 +1,13 @@
+website:
+  sidebar:
+    style: floating
+    search: true
+    contents:
+      - text: "Home"
+        file: index.ipynb
+      - text: "Blog Core"
+        file: 05_blog_v5.ipynb
+      - text: "Admin"
+        file: 06_admin.ipynb
+      - text: "Auth Update"
+        file: 07_update_auth.ipynb
