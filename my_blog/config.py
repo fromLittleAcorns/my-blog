@@ -74,3 +74,9 @@ RELOAD = DEBUG
 
 ANALYTICS_ENABLED = os.getenv("ANALYTICS_ENABLED", "false")
 
+# ============================================
+# Server Settings
+# ============================================
+ORIGIN = os.getenv("ORIGIN", "blog.therichmond4.co.uk")
+
+
