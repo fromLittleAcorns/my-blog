@@ -1,0 +1,1710 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Example: add a post – my-blog</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-de52dc3353fe04aa4d07820b7139bd46.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+<link rel="stylesheet" href="styles.css">
+<meta property="og:title" content="Example: add a post – my-blog">
+<meta property="og:description" content="A blog developed using fasthtml and nbdev">
+<meta property="og:image" content="https://fromLittleAcorns.github.io/my-blog/05_blog_v5_files/figure-html/e0443ce1-1-8fca75ad-5587-433c-a5a9-354f8590f2bf.png">
+<meta property="og:site_name" content="my-blog">
+<meta name="twitter:title" content="Example: add a post – my-blog">
+<meta name="twitter:description" content="A blog developed using fasthtml and nbdev">
+<meta name="twitter:image" content="https://fromLittleAcorns.github.io/my-blog/05_blog_v5_files/figure-html/e0443ce1-1-8fca75ad-5587-433c-a5a9-354f8590f2bf.png">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">my-blog</span>
+    </a>
+  </div>
+        <div class="quarto-navbar-tools tools-end">
+</div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./blog_v5.html">Example: add a post</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">my-blog</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./blog_v5.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Example: add a post</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06_admin.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dialogue to deeal with the admin routes for my blog site. This includes editing and saving blog posts, though not as yet creating from scratch</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07_update_auth.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Notebook to update the database to add user type (local or oauth)</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#version-5" id="toc-version-5" class="nav-link active" data-scroll-target="#version-5">Version 5</a></li>
+  <li><a href="#appstate" id="toc-appstate" class="nav-link" data-scroll-target="#appstate">AppState</a></li>
+  <li><a href="#create_database_tables" id="toc-create_database_tables" class="nav-link" data-scroll-target="#create_database_tables">create_database_tables</a></li>
+  <li><a href="#create_post_database" id="toc-create_post_database" class="nav-link" data-scroll-target="#create_post_database">create_post_database</a></li>
+  <li><a href="#create_app" id="toc-create_app" class="nav-link" data-scroll-target="#create_app">create_app</a></li>
+  <li><a href="#create_app-1" id="toc-create_app-1" class="nav-link" data-scroll-target="#create_app-1">create_app</a></li>
+  <li><a href="#route" id="toc-route" class="nav-link" data-scroll-target="#route">route</a></li>
+  <li><a href="#register_routes" id="toc-register_routes" class="nav-link" data-scroll-target="#register_routes">register_routes</a></li>
+  <li><a href="#logout" id="toc-logout" class="nav-link" data-scroll-target="#logout">logout</a></li>
+  <li><a href="#intro" id="toc-intro" class="nav-link" data-scroll-target="#intro">intro</a></li>
+  <li><a href="#hx_link" id="toc-hx_link" class="nav-link" data-scroll-target="#hx_link">hx_link</a></li>
+  <li><a href="#hx_attrs" id="toc-hx_attrs" class="nav-link" data-scroll-target="#hx_attrs">hx_attrs</a></li>
+  <li><a href="#is_logged_in" id="toc-is_logged_in" class="nav-link" data-scroll-target="#is_logged_in">is_logged_in</a></li>
+  <li><a href="#navbar" id="toc-navbar" class="nav-link" data-scroll-target="#navbar">navbar</a></li>
+  <li><a href="#x_icon" id="toc-x_icon" class="nav-link" data-scroll-target="#x_icon">x_icon</a></li>
+  <li><a href="#footer" id="toc-footer" class="nav-link" data-scroll-target="#footer">footer</a></li>
+  <li><a href="#social_link" id="toc-social_link" class="nav-link" data-scroll-target="#social_link">social_link</a></li>
+  <li><a href="#social_link-1" id="toc-social_link-1" class="nav-link" data-scroll-target="#social_link-1">social_link</a></li>
+  <li><a href="#layout" id="toc-layout" class="nav-link" data-scroll-target="#layout">layout</a></li>
+  <li><a href="#slug_exists" id="toc-slug_exists" class="nav-link" data-scroll-target="#slug_exists">slug_exists</a></li>
+  <li><a href="#get_slug" id="toc-get_slug" class="nav-link" data-scroll-target="#get_slug">get_slug</a></li>
+  <li><a href="#blogpost" id="toc-blogpost" class="nav-link" data-scroll-target="#blogpost">blogpost</a></li>
+  <li><a href="#index" id="toc-index" class="nav-link" data-scroll-target="#index">index</a></li>
+  <li><a href="#get_tags" id="toc-get_tags" class="nav-link" data-scroll-target="#get_tags">get_tags</a></li>
+  <li><a href="#get_post_tags" id="toc-get_post_tags" class="nav-link" data-scroll-target="#get_post_tags">get_post_tags</a></li>
+  <li><a href="#get_posts" id="toc-get_posts" class="nav-link" data-scroll-target="#get_posts">get_posts</a></li>
+  <li><a href="#tag_pill" id="toc-tag_pill" class="nav-link" data-scroll-target="#tag_pill">tag_pill</a></li>
+  <li><a href="#tag_filter" id="toc-tag_filter" class="nav-link" data-scroll-target="#tag_filter">tag_filter</a></li>
+  <li><a href="#tag_badge" id="toc-tag_badge" class="nav-link" data-scroll-target="#tag_badge">tag_badge</a></li>
+  <li><a href="#decode_tag_str" id="toc-decode_tag_str" class="nav-link" data-scroll-target="#decode_tag_str">decode_tag_str</a></li>
+  <li><a href="#sentinal" id="toc-sentinal" class="nav-link" data-scroll-target="#sentinal">sentinal</a></li>
+  <li><a href="#blog" id="toc-blog" class="nav-link" data-scroll-target="#blog">blog</a></li>
+  <li><a href="#get_more_posts" id="toc-get_more_posts" class="nav-link" data-scroll-target="#get_more_posts">get_more_posts</a></li>
+  <li><a href="#get_post_image" id="toc-get_post_image" class="nav-link" data-scroll-target="#get_post_image">get_post_image</a></li>
+  <li><a href="#check_if_admin" id="toc-check_if_admin" class="nav-link" data-scroll-target="#check_if_admin">check_if_admin</a></li>
+  <li><a href="#post_card" id="toc-post_card" class="nav-link" data-scroll-target="#post_card">post_card</a></li>
+  <li><a href="#add_post" id="toc-add_post" class="nav-link" data-scroll-target="#add_post">add_post</a></li>
+  <li><a href="#process_upload" id="toc-process_upload" class="nav-link" data-scroll-target="#process_upload">process_upload</a></li>
+  <li><a href="#get" id="toc-get" class="nav-link" data-scroll-target="#get">get</a></li>
+  <li><a href="#save_pending" id="toc-save_pending" class="nav-link" data-scroll-target="#save_pending">save_pending</a></li>
+  <li><a href="#load_pending" id="toc-load_pending" class="nav-link" data-scroll-target="#load_pending">load_pending</a></li>
+  <li><a href="#clear_pending" id="toc-clear_pending" class="nav-link" data-scroll-target="#clear_pending">clear_pending</a></li>
+  <li><a href="#do_upload" id="toc-do_upload" class="nav-link" data-scroll-target="#do_upload">do_upload</a></li>
+  <li><a href="#post" id="toc-post" class="nav-link" data-scroll-target="#post">post</a></li>
+  <li><a href="#post-1" id="toc-post-1" class="nav-link" data-scroll-target="#post-1">post</a></li>
+  <li><a href="#rewrite_image_paths" id="toc-rewrite_image_paths" class="nav-link" data-scroll-target="#rewrite_image_paths">rewrite_image_paths</a></li>
+  <li><a href="#load_md_file" id="toc-load_md_file" class="nav-link" data-scroll-target="#load_md_file">load_md_file</a></li>
+  <li><a href="#convert_obsidian_images" id="toc-convert_obsidian_images" class="nav-link" data-scroll-target="#convert_obsidian_images">convert_obsidian_images</a></li>
+  <li><a href="#about_content" id="toc-about_content" class="nav-link" data-scroll-target="#about_content">about_content</a></li>
+  <li><a href="#about" id="toc-about" class="nav-link" data-scroll-target="#about">about</a></li>
+  <li><a href="#enhancedrenderer" id="toc-enhancedrenderer" class="nav-link" data-scroll-target="#enhancedrenderer">EnhancedRenderer</a></li>
+  <li><a href="#strava_embed" id="toc-strava_embed" class="nav-link" data-scroll-target="#strava_embed">strava_embed</a></li>
+  <li><a href="#process_strava_embeddings" id="toc-process_strava_embeddings" class="nav-link" data-scroll-target="#process_strava_embeddings">process_strava_embeddings</a></li>
+  <li><a href="#process_komoot_embed" id="toc-process_komoot_embed" class="nav-link" data-scroll-target="#process_komoot_embed">process_komoot_embed</a></li>
+  <li><a href="#process_obsidian_images" id="toc-process_obsidian_images" class="nav-link" data-scroll-target="#process_obsidian_images">process_obsidian_images</a></li>
+  <li><a href="#process_you_tube_embed" id="toc-process_you_tube_embed" class="nav-link" data-scroll-target="#process_you_tube_embed">process_you_tube_embed</a></li>
+  <li><a href="#process_bunny_embed" id="toc-process_bunny_embed" class="nav-link" data-scroll-target="#process_bunny_embed">process_bunny_embed</a></li>
+  <li><a href="#sitemap" id="toc-sitemap" class="nav-link" data-scroll-target="#sitemap">sitemap</a></li>
+  <li><a href="#export" id="toc-export" class="nav-link" data-scroll-target="#export">Export</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/fromLittleAcorns/my-blog/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div><div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="blog_v5.html.md"><i class="bi bi-file-code"></i>CommonMark</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Example: add a post</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<section id="version-5" class="level3">
+<h3 class="anchored" data-anchor-id="version-5">Version 5</h3>
+<p>This version features the ability to import the module without problems with the app having to be created during the load. This allows it to be deployed easily with a python app file and to change from a Jupyter server to a more straightforward uvicorn server</p>
+<p>Developments still to add in: 1. Add ability to delete posts from the UI if admin 2. Add ability to edit posts in situ 3. Check if there is a way to enable image layout in Obscidian</p>
+<p>Sets the default export module for nbdev. All cells marked <code>#| export</code> will be written to <code>my_blog/core_v5.py</code>.</p>
+<hr>
+</section>
+<section id="appstate" class="level3">
+<h3 class="anchored" data-anchor-id="appstate">AppState</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> AppState(</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    pdb:Database, posts_t:Table, tags_t:Table, post_tags_t:Table, auth:AuthManager, db:Database</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>)<span class="op">-&gt;</span><span class="va">None</span>:</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+<section id="create_database_tables" class="level3">
+<h3 class="anchored" data-anchor-id="create_database_tables">create_database_tables</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> create_database_tables(</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    pdb:Database, <span class="co"># database to save posts and all associated tag tables</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Call self as a function.</em></p>
+<hr>
+</section>
+<section id="create_post_database" class="level3">
+<h3 class="anchored" data-anchor-id="create_post_database">create_post_database</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> create_post_database(</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    db_path:<span class="bu">str</span>, <span class="co"># path to posts database</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>)<span class="op">-&gt;</span>Database: <span class="co"># Creates all the required database tables if they don't already exist</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Call self as a function.</em></p>
+<p>Convenience wrapper that creates a database connection and initializes all tables.</p>
+<hr>
+</section>
+<section id="create_app" class="level3">
+<h3 class="anchored" data-anchor-id="create_app">create_app</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> create_app(</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Call self as a function.</em></p>
+<hr>
+</section>
+<section id="create_app-1" class="level3">
+<h3 class="anchored" data-anchor-id="create_app-1">create_app</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> create_app(</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Call self as a function.</em></p>
+<hr>
+</section>
+<section id="route" class="level3">
+<h3 class="anchored" data-anchor-id="route">route</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> route(</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    path:NoneType<span class="op">=</span><span class="va">None</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Decorator to collect routes without registering them immediately.</em> Use <span class="citation" data-cites="route">@route</span>(‘/path’) or <span class="citation" data-cites="route">@route</span>() for function-name-based paths.</p>
+<hr>
+</section>
+<section id="register_routes" class="level3">
+<h3 class="anchored" data-anchor-id="register_routes">register_routes</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> register_routes(</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    app</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Register all collected routes with the app.</em></p>
+<hr>
+</section>
+<section id="logout" class="level3">
+<h3 class="anchored" data-anchor-id="logout">logout</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> logout(</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    sess</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Overwrite logout route from fasthtml_auth to return users to home page after logging out</em></p>
+<hr>
+</section>
+<section id="intro" class="level3">
+<h3 class="anchored" data-anchor-id="intro">intro</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> intro(</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Call self as a function.</em></p>
+<hr>
+</section>
+<section id="hx_link" class="level3">
+<h3 class="anchored" data-anchor-id="hx_link">hx_link</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> hx_link(</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    txt, href, cls:<span class="bu">str</span><span class="op">=</span><span class="st">'text-primary underline'</span>, target:<span class="bu">str</span><span class="op">=</span><span class="st">'#main-content'</span>, kw:VAR_KEYWORD</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Call self as a function.</em></p>
+<hr>
+</section>
+<section id="hx_attrs" class="level3">
+<h3 class="anchored" data-anchor-id="hx_attrs">hx_attrs</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> hx_attrs(</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    target:<span class="bu">str</span><span class="op">=</span><span class="st">'#main-content'</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Call self as a function.</em></p>
+<p>This dialogue is part of an nbdev project. When deployed to github the actions setup for publishing to github pages is resulting in two entries for this dialogue (see: https://fromlittleacorns.github.io/my-blog/). Can you use dialogue tools to explore why this might be happening</p>
+<p>Yes please create the sidebar file. The pages looks like this:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="05_blog_v5_files/figure-html/e0443ce1-1-8fca75ad-5587-433c-a5a9-354f8590f2bf.png" class="img-fluid figure-img"></p>
+<figcaption>image.png</figcaption>
+</figure>
+</div>
+<p>You can see the duplication there</p>
+<hr>
+</section>
+<section id="is_logged_in" class="level3">
+<h3 class="anchored" data-anchor-id="is_logged_in">is_logged_in</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> is_logged_in(</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    req</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Call self as a function.</em></p>
+<hr>
+</section>
+<section id="navbar" class="level3">
+<h3 class="anchored" data-anchor-id="navbar">navbar</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> navbar(</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    req:Request</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Call self as a function.</em></p>
+<hr>
+</section>
+<section id="x_icon" class="level3">
+<h3 class="anchored" data-anchor-id="x_icon">x_icon</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> x_icon(</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Call self as a function.</em></p>
+<hr>
+</section>
+<section id="footer" class="level3">
+<h3 class="anchored" data-anchor-id="footer">footer</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> footer(</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Call self as a function.</em></p>
+<hr>
+</section>
+<section id="social_link" class="level3">
+<h3 class="anchored" data-anchor-id="social_link">social_link</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> social_link(</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    k, v</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Call self as a function.</em></p>
+<hr>
+</section>
+<section id="social_link-1" class="level3">
+<h3 class="anchored" data-anchor-id="social_link-1">social_link</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> social_link(</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    k, v</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Call self as a function.</em></p>
+<hr>
+</section>
+<section id="layout" class="level3">
+<h3 class="anchored" data-anchor-id="layout">layout</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> layout(</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    req, content:VAR_POSITIONAL, htmx, title:NoneType<span class="op">=</span><span class="va">None</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+*title here is used to set the browser tab label in the
+
+<p>section and will not be visible on the page. The article title is appended into the main content and shows below the navbar*</p>
+<hr>
+</section>
+<section id="slug_exists" class="level3">
+<h3 class="anchored" data-anchor-id="slug_exists">slug_exists</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> slug_exists(</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    slug</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Call self as a function.</em></p>
+<div id="6cd18eae" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datetime <span class="im">import</span> datetime</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<hr>
+</section>
+<section id="get_slug" class="level3">
+<h3 class="anchored" data-anchor-id="get_slug">get_slug</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_slug(</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    title</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Call self as a function.</em></p>
+<hr>
+</section>
+<section id="blogpost" class="level3">
+<h3 class="anchored" data-anchor-id="blogpost">blogpost</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> blogpost(</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    htmx, req, slug:<span class="bu">str</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Call self as a function.</em></p>
+<hr>
+</section>
+<section id="index" class="level3">
+<h3 class="anchored" data-anchor-id="index">index</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> index(</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    req, htmx</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Call self as a function.</em></p>
+<hr>
+</section>
+<section id="get_tags" class="level3">
+<h3 class="anchored" data-anchor-id="get_tags">get_tags</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_tags(</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    tags_tbl</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Call self as a function.</em></p>
+<hr>
+</section>
+<section id="get_post_tags" class="level3">
+<h3 class="anchored" data-anchor-id="get_post_tags">get_post_tags</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_post_tags(</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    post_id:<span class="bu">int</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Call self as a function.</em></p>
+<p>def get_posts(n: Union[int, None]=None, tags: Union[List, None] = None, logged_in: bool=False): if tags: place_holders = ‘,’.join(‘?’ * len(tags)) private_posts_query = ’’ if logged_in else ‘AND p.private = False’ query = f”“” SELECT DISTINCT p.* FROM posts p JOIN post_tags pt ON p.id = pt.post_id JOIN tags t ON pt.tag_id = t.id WHERE t.name IN ({place_holders}) AND p.published = True {private_posts_query} ORDER BY p.created DESC ““” if n: query += f” LIMIT {n}” posts = state.pdb.q(query, tags) else: posts = list(state.posts_t.rows_where(“published = ? AND (private = False OR ?)”, [True, logged_in], order_by=“created DESC”, limit=n)) posts = [dict(r) for r in posts]</p>
+<pre><code>for p in posts:
+    p['created'] = datetime.fromisoformat(p['created']) if isinstance(p['created'], str) else p['created']
+    p['tags'] = get_post_tags(p['id'])
+return posts</code></pre>
+<hr>
+</section>
+<section id="get_posts" class="level3">
+<h3 class="anchored" data-anchor-id="get_posts">get_posts</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_posts(</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    n:Optional<span class="op">=</span><span class="va">None</span>, <span class="co"># number of posts to load</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>    tags:Optional<span class="op">=</span><span class="va">None</span>, <span class="co"># list of tags</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>    logged_in:<span class="bu">bool</span><span class="op">=</span><span class="va">False</span>, <span class="co"># is user logged in</span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>    offset:Optional<span class="op">=</span><span class="va">None</span>, <span class="co"># where to start to load posts once ordered</span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>)<span class="op">-&gt;</span><span class="bu">list</span>: <span class="co"># list of posts</span></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Call self as a function.</em></p>
+<hr>
+</section>
+<section id="tag_pill" class="level3">
+<h3 class="anchored" data-anchor-id="tag_pill">tag_pill</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> tag_pill(</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    tag_name, selected_tags</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Call self as a function.</em></p>
+<hr>
+</section>
+<section id="tag_filter" class="level3">
+<h3 class="anchored" data-anchor-id="tag_filter">tag_filter</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> tag_filter(</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>    selected</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Call self as a function.</em></p>
+<hr>
+</section>
+<section id="tag_badge" class="level3">
+<h3 class="anchored" data-anchor-id="tag_badge">tag_badge</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> tag_badge(</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    name</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Call self as a function.</em></p>
+<hr>
+</section>
+<section id="decode_tag_str" class="level3">
+<h3 class="anchored" data-anchor-id="decode_tag_str">decode_tag_str</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> decode_tag_str(</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>    tag_str:<span class="bu">str</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Call self as a function.</em></p>
+<div id="af5f694b" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>test_tags_decode_str <span class="op">=</span> <span class="st">'cycling, motorhome, coding'</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>decode_tag_str(test_tags_decode_str)</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> decode_tag_str(test_tags_decode_str) <span class="op">==</span> {<span class="st">'cycling'</span>, <span class="st">'motorhome'</span>, <span class="st">'coding'</span>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<hr>
+</section>
+<section id="sentinal" class="level3">
+<h3 class="anchored" data-anchor-id="sentinal">sentinal</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> sentinal(</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>    n:<span class="bu">int</span>, <span class="co"># number of posts to load</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>    offset:<span class="bu">int</span><span class="op">=</span><span class="va">None</span>, <span class="co"># where to start the load</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>    tags:<span class="bu">str</span><span class="op">=</span><span class="va">None</span>, <span class="co"># a list of active tags separated by commas</span></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>)<span class="op">-&gt;</span>functools.partial(<span class="op">&lt;</span>function ft_hx at <span class="bn">0x7f1c33484540</span><span class="op">&gt;</span>, <span class="st">'div'</span>): <span class="co"># Div to add to the end of the list of posts to act as a sentinal</span></span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Create a div to add to the end of the posts on the blog. When it becomes visible then it activates the load of more posts</em></p>
+<p><span class="citation" data-cites="route">@route</span> def blog(htmx, req, tags:str=None): logged_in = is_logged_in(req) posts_to_load = 10 # selected is a SET of the name of the selected tags selected = {unquote(t.strip()) for t in (tags or ’‘).split(’,’) if t.strip()} filtered = get_posts(n=posts_to_load, tags=selected, logged_in=logged_in) tag_filter_div = tag_filter(selected) items = [post_card(p, req) for p in filtered] if len(items) == posts_to_load: items.append(sentinal(offset=0, n=posts_to_load, tags=tags))</p>
+<pre><code>post_content = Div(*items, cls="space-y-2", id="posts-list") if items else P("No posts yet.", cls="text-muted-foreground", id="posts-list")
+if htmx and htmx.target == "posts-list":
+    tag_filter_div.attrs['hx-swap-oob'] = 'true'
+    return post_content, tag_filter_div
+return layout(req, H2("Blog"), tag_filter_div, Divider(cls=('my-2')), post_content, title="Blog", htmx=htmx)</code></pre>
+<hr>
+</section>
+<section id="blog" class="level3">
+<h3 class="anchored" data-anchor-id="blog">blog</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> blog(</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>    htmx, req, tags:<span class="bu">str</span><span class="op">=</span><span class="va">None</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Call self as a function.</em></p>
+<hr>
+</section>
+<section id="get_more_posts" class="level3">
+<h3 class="anchored" data-anchor-id="get_more_posts">get_more_posts</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_more_posts(</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>    req, n:<span class="bu">int</span>, offset:<span class="bu">int</span>, tags:<span class="bu">str</span><span class="op">=</span><span class="va">None</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Call self as a function.</em></p>
+I am inplementing an infinte scroll using a sentinal and the /loadmore route. When I first load /blog it loads 10 posts and has the sentinal at the end with the following:
+<div data-hx-get="/loadmore?offset=10&amp;n=10&amp;tags=None" data-hx-trigger="intersect once" data-hx-swap="outerHTML" data-hx-target="this">
+
+</div>
+<p>But when the sentinal is activated no more posts are loaded, when I know there should be more (13 in total)? Can you see why this might happen?</p>
+<p>I have updated sentinal, does this look ok def sentinal(n:int, offset:int=None, tags: str=None): # n: int posts to load # offset: int where to load from # tags: str string containing selected tags with comma separation get_str = f”/loadmore?offset={offset}&amp;n={n}” if tags: get_str += f”&amp;tags={tags}” sentinal = Div( hx_get=get_str,<br>
+hx_trigger=“intersect once”, hx_swap=“outerHTML”, hx_target=“this” ) return sentinal</p>
+<p>I guess I can check the tags passed in and if there are none, then not call the tags parameter so that it will default to None in the loadposts function.</p>
+In the htmx online guidebook they use a htmx trigger “revealled”. Is this available in fastHTML and if so why use the intersect once. The full code they have is: {% if contacts|length == 10 %}
+
+
+<span data-hx-target="closest tr" data-hx-trigger="revealed" data-hx-swap="outerHTML" data-hx-select="tbody > tr" data-hx-get="/contacts?page={{ page + 1 }}">Loading More…</span>
+
+
+<p>{% endif %}</p>
+<p>I am happy to use the intersect once, I just wanted to understand the difference. Can you elaborate on the selection. I understand the filter they use just results in new rows being selected. In your example you have a target of “this”, what is that and how do you avoid getting headers etc?</p>
+<p>Ok that makes sense and I think our approach is more efficient. Do I need to start by setting up pagination within get_posts, or should we create a new way to retrieve the pages?</p>
+<p>Ok I have updated get_posts (I created a new version after the original)</p>
+<p>given that the call to get_more_posts is to load more posts and that it uses outerHTML as a swop, I was returning additional posts and if necessary a new sentinal, what is the correct syntax for that?</p>
+<p>I am confused by your third comment above, I am setting the sentinal offet so that it will load posts after the first load is complete, is that not correct?</p>
+<p>I can see that when a call is made to /blog/more, ir is going to /blog/{slug}. how would you recomment i change the routes to avoid this. its a pain to change the route registration order, i guess i could just rename it to /load_more ir similar?</p>
+<hr>
+</section>
+<section id="get_post_image" class="level3">
+<h3 class="anchored" data-anchor-id="get_post_image">get_post_image</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_post_image(</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>    p</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Call self as a function.</em></p>
+<hr>
+</section>
+<section id="check_if_admin" class="level3">
+<h3 class="anchored" data-anchor-id="check_if_admin">check_if_admin</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> check_if_admin(</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>    req</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Call self as a function.</em></p>
+<hr>
+</section>
+<section id="post_card" class="level3">
+<h3 class="anchored" data-anchor-id="post_card">post_card</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> post_card(</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>    p, req</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Post summary card with optional admin controls</em></p>
+<hr>
+</section>
+<section id="add_post" class="level3">
+<h3 class="anchored" data-anchor-id="add_post">add_post</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> add_post(</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>    title, content, excerpt:<span class="bu">str</span><span class="op">=</span><span class="st">''</span>, tags:NoneType<span class="op">=</span><span class="va">None</span>, published:<span class="bu">bool</span><span class="op">=</span><span class="va">True</span>, created:NoneType<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>    updated:NoneType<span class="op">=</span><span class="va">None</span>, slug:<span class="bu">str</span><span class="op">=</span><span class="va">None</span>, private:<span class="bu">bool</span><span class="op">=</span><span class="va">False</span></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Call self as a function.</em></p>
+<div id="189f1574" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> post_exists(slug: <span class="bu">str</span>) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">bool</span>(_state.posts_t(where<span class="op">=</span><span class="st">'slug=?'</span>, vals<span class="op">=</span>[slug]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<hr>
+</section>
+<section id="process_upload" class="level3">
+<h3 class="anchored" data-anchor-id="process_upload">process_upload</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> process_upload(</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>    content:<span class="bu">bytes</span>, filename:<span class="bu">str</span>, slug:<span class="bu">str</span><span class="op">=</span><span class="va">None</span>, overwrite:<span class="bu">bool</span><span class="op">=</span><span class="va">False</span></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Call self as a function.</em></p>
+<hr>
+</section>
+<section id="get" class="level3">
+<h3 class="anchored" data-anchor-id="get">get</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get(</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>    htmx</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Call self as a function.</em></p>
+<hr>
+</section>
+<section id="save_pending" class="level3">
+<h3 class="anchored" data-anchor-id="save_pending">save_pending</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> save_pending(</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>    slug:<span class="bu">str</span>, md_name:<span class="bu">str</span>, md_content:<span class="bu">bytes</span>, images:<span class="bu">list</span></span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Save md content and images to temp storage keyed by slug.</em> images is a list of (filename, bytes) tuples.</p>
+<hr>
+</section>
+<section id="load_pending" class="level3">
+<h3 class="anchored" data-anchor-id="load_pending">load_pending</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> load_pending(</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>    slug:<span class="bu">str</span></span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Returns (md_content, images) or None if not found.</em></p>
+<hr>
+</section>
+<section id="clear_pending" class="level3">
+<h3 class="anchored" data-anchor-id="clear_pending">clear_pending</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> clear_pending(</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>    slug:<span class="bu">str</span></span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Call self as a function.</em></p>
+<div id="f1455440" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="at">@route</span>(<span class="st">'/admin/upload'</span>)    </span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> post(upload2: <span class="bu">list</span>[UploadFile]):</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>    files <span class="op">=</span> [(f.filename, f.<span class="bu">file</span>.read()) <span class="cf">for</span> f <span class="kw">in</span> upload2]</span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>    md_files <span class="op">=</span> [(n, c) <span class="cf">for</span> n, c <span class="kw">in</span> files <span class="cf">if</span> n.endswith(<span class="st">'.md'</span>)]</span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>    img_files <span class="op">=</span> [(n, c) <span class="cf">for</span> n, c <span class="kw">in</span> files <span class="cf">if</span> <span class="kw">not</span> n.endswith(<span class="st">'.md'</span>)]</span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>    results <span class="op">=</span> []</span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>    slug <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> img_files <span class="kw">and</span> <span class="bu">len</span>(md_files)<span class="op">==</span><span class="dv">0</span>:</span>
+<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> Div(Alert(<span class="st">"Please upload a post (.md file) with images, or upload images separately"</span>, cls<span class="op">=</span>AlertT.warning))</span>
+<span id="cb47-10"><a href="#cb47-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> name, content <span class="kw">in</span> md_files:</span>
+<span id="cb47-11"><a href="#cb47-11" aria-hidden="true" tabindex="-1"></a>        success, message, slug <span class="op">=</span> process_upload(content, name)</span>
+<span id="cb47-12"><a href="#cb47-12" aria-hidden="true" tabindex="-1"></a>        results.append((name, success, message))</span>
+<span id="cb47-13"><a href="#cb47-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> name, content <span class="kw">in</span> img_files:</span>
+<span id="cb47-14"><a href="#cb47-14" aria-hidden="true" tabindex="-1"></a>        success, message, _ <span class="op">=</span> process_upload(content, name, slug<span class="op">=</span>slug)</span>
+<span id="cb47-15"><a href="#cb47-15" aria-hidden="true" tabindex="-1"></a>        results.append((name, success, message))</span>
+<span id="cb47-16"><a href="#cb47-16" aria-hidden="true" tabindex="-1"></a>    header <span class="op">=</span> [<span class="st">"Name"</span>, <span class="st">'Success'</span>, <span class="st">'Message'</span>]</span>
+<span id="cb47-17"><a href="#cb47-17" aria-hidden="true" tabindex="-1"></a>    body <span class="op">=</span> [[r[<span class="dv">0</span>], r[<span class="dv">1</span>], r[<span class="dv">2</span>]] <span class="cf">for</span> r <span class="kw">in</span> results]</span>
+<span id="cb47-18"><a href="#cb47-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> Div(H2(<span class="st">"Post upload results"</span>), TableFromLists(header, body))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<hr>
+</section>
+<section id="do_upload" class="level3">
+<h3 class="anchored" data-anchor-id="do_upload">do_upload</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> do_upload(</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>    md_files, img_files, slug:<span class="bu">str</span><span class="op">=</span><span class="va">None</span>, overwrite:<span class="bu">bool</span><span class="op">=</span><span class="va">False</span></span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Call self as a function.</em></p>
+<hr>
+</section>
+<section id="post" class="level3">
+<h3 class="anchored" data-anchor-id="post">post</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> post(</span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>    upload2:<span class="bu">list</span></span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Call self as a function.</em></p>
+<hr>
+</section>
+<section id="post-1" class="level3">
+<h3 class="anchored" data-anchor-id="post-1">post</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> post(</span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>    slug:<span class="bu">str</span></span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Call self as a function.</em></p>
+<section id="end-section" class="level6">
+<h6 class="anchored" data-anchor-id="end-section">end-section</h6>
+<p>I don’t think this is correct as the filename of the md file is not necessarily going to be slug + ‘.md’. The filename surely needs to come from the originally supplied name? I think that this flaw is built into the load and save pending functions as well. Do you agree or have I misunderstood?</p>
+<hr>
+</section>
+</section>
+<section id="rewrite_image_paths" class="level3">
+<h3 class="anchored" data-anchor-id="rewrite_image_paths">rewrite_image_paths</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb51"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> rewrite_image_paths(</span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>    content:<span class="bu">str</span>, slug:<span class="bu">str</span></span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>)<span class="op">-&gt;</span><span class="bu">str</span>:</span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Call self as a function.</em></p>
+<hr>
+</section>
+<section id="load_md_file" class="level3">
+<h3 class="anchored" data-anchor-id="load_md_file">load_md_file</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> load_md_file(</span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>    path:<span class="bu">str</span>, image_base:<span class="bu">str</span><span class="op">=</span><span class="va">None</span></span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>)<span class="op">-&gt;</span><span class="bu">str</span>:</span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Load markdown file, optionally converting Obsidian image syntax</em></p>
+<hr>
+</section>
+<section id="convert_obsidian_images" class="level3">
+<h3 class="anchored" data-anchor-id="convert_obsidian_images">convert_obsidian_images</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb53"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> convert_obsidian_images(</span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>    content:<span class="bu">str</span>, image_base:<span class="bu">str</span><span class="op">=</span><span class="st">'/static/image/about'</span></span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>)<span class="op">-&gt;</span><span class="bu">str</span>:</span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Convert Obsidian ![[image.ext]] syntax to standard markdown <embed src="./path/image.ext" class="img-fluid"></em></p>
+<div id="f7c15daf" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>test_img_1_content <span class="op">=</span> <span class="st">'''test string with obscidian markdown, first without a table:</span></span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a><span class="st">![[IMG_3932.jpeg]]</span></span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a><span class="st">next with size:</span></span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a><span class="st">![[IMG_3932.jpeg|250]]</span></span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a><span class="st">and with size and position:</span></span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a><span class="st">![[IMG_3932.jpeg|250|right]]</span></span>
+<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a><span class="st">Then some rubbish</span></span>
+<span id="cb54-8"><a href="#cb54-8" aria-hidden="true" tabindex="-1"></a><span class="st">'''</span></span>
+<span id="cb54-9"><a href="#cb54-9" aria-hidden="true" tabindex="-1"></a>base_path <span class="op">=</span> <span class="st">"/static/image/post_images/post_1"</span></span>
+<span id="cb54-10"><a href="#cb54-10" aria-hidden="true" tabindex="-1"></a>converted <span class="op">=</span> convert_obsidian_images(test_img_1_content, base_path)</span>
+<span id="cb54-11"><a href="#cb54-11" aria-hidden="true" tabindex="-1"></a>converted</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="135">
+<pre><code>'test string with obscidian markdown, first without a table:\n![](/static/image/post_images/post_1/IMG_3932.jpeg)\nnext with size:\n![](/static/image/post_images/post_1/IMG_3932.jpeg)\nand with size and position:\n![](/static/image/post_images/post_1/IMG_3932.jpeg)\nThen some rubbish\n'</code></pre>
+</div>
+</div>
+<hr>
+</section>
+<section id="about_content" class="level3">
+<h3 class="anchored" data-anchor-id="about_content">about_content</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb56"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> about_content(</span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Call self as a function.</em></p>
+<hr>
+</section>
+<section id="about" class="level3">
+<h3 class="anchored" data-anchor-id="about">about</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb57"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> about(</span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>    req, htmx</span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Call self as a function.</em></p>
+<hr>
+</section>
+<section id="enhancedrenderer" class="level3">
+<h3 class="anchored" data-anchor-id="enhancedrenderer">EnhancedRenderer</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb58"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> EnhancedRenderer(</span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a>    args:VAR_POSITIONAL, img_dir:NoneType<span class="op">=</span><span class="va">None</span>, kwargs:VAR_KEYWORD</span>
+<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Custom renderer for Franken UI that handles image paths</em></p>
+<hr>
+</section>
+<section id="strava_embed" class="level3">
+<h3 class="anchored" data-anchor-id="strava_embed">strava_embed</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb59"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> strava_embed(</span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>    activity_id:<span class="bu">str</span></span>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Call self as a function.</em></p>
+<hr>
+</section>
+<section id="process_strava_embeddings" class="level3">
+<h3 class="anchored" data-anchor-id="process_strava_embeddings">process_strava_embeddings</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb60"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> process_strava_embeddings(</span>
+<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a>    page:NotStr</span>
+<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Call self as a function.</em></p>
+<section id="develop-komoot-embeddings" class="level4">
+<h4 class="anchored" data-anchor-id="develop-komoot-embeddings">Develop Komoot embeddings</h4>
+<p>Komoot does not force users to login to see the iframe and so I will use Komoot wherever possible</p>
+<p>Gallery layout <iframe src="https://www.komoot.com/tour/2894225074/embed?share_token=a0odP3j5E5ZttSC0QLn2DM6JarX4rBSm4LRJ4eKeqKMVu6OGoX&amp;layout=gallery&amp;gallery=1" width="100%" height="640" frameborder="0" scrolling="no"></iframe></p>
+<p>Classic layout <iframe src="https://www.komoot.com/tour/2894225074/embed?share_token=a0odP3j5E5ZttSC0QLn2DM6JarX4rBSm4LRJ4eKeqKMVu6OGoX&amp;layout=classic&amp;profile=1" width="100%" height="700" frameborder="0" scrolling="no"></iframe></p>
+<hr>
+</section>
+</section>
+<section id="process_komoot_embed" class="level3">
+<h3 class="anchored" data-anchor-id="process_komoot_embed">process_komoot_embed</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb61"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> process_komoot_embed(</span>
+<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a>    page:NotStr</span>
+<span id="cb61-4"><a href="#cb61-4" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb61-5"><a href="#cb61-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Call self as a function.</em></p>
+<hr>
+</section>
+<section id="process_obsidian_images" class="level3">
+<h3 class="anchored" data-anchor-id="process_obsidian_images">process_obsidian_images</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb62"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> process_obsidian_images(</span>
+<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a>    page:NotStr, image_base:<span class="bu">str</span></span>
+<span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a>)<span class="op">-&gt;</span>NotStr:</span>
+<span id="cb62-5"><a href="#cb62-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Call self as a function.</em></p>
+<div id="d53a1a46" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb63"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>test_page <span class="op">=</span> <span class="st">'''</span></span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a><span class="st">This is a test page with a youtube embeddings</span></span>
+<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a><span class="st">It is:</span></span>
+<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-5"><a href="#cb63-5" aria-hidden="true" tabindex="-1"></a><span class="st">https://youtu.be/92xb0kbj2OM</span></span>
+<span id="cb63-6"><a href="#cb63-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-7"><a href="#cb63-7" aria-hidden="true" tabindex="-1"></a><span class="st">Lets see if we can find them</span></span>
+<span id="cb63-8"><a href="#cb63-8" aria-hidden="true" tabindex="-1"></a><span class="st">'''</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="f0892419" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb64"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>content <span class="op">=</span> render_md(test_page, renderer<span class="op">=</span>EnhancedRenderer)</span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a>content</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="145">
+<pre><code>'&lt;p class="text-lg leading-relaxed mb-6 text-lg leading-relaxed mb-6"&gt;This is a test page with a youtube embeddings\nIt is:&lt;/p&gt;\n&lt;p class="text-lg leading-relaxed mb-6 text-lg leading-relaxed mb-6"&gt;&lt;a href="https://youtu.be/92xb0kbj2OM" class="uk-link text-primary hover:text-primary-focus underline"&gt;https://youtu.be/92xb0kbj2OM&lt;/a&gt;&lt;/p&gt;\n&lt;p class="text-lg leading-relaxed mb-6 text-lg leading-relaxed mb-6"&gt;Lets see if we can find them&lt;/p&gt;\n'</code></pre>
+</div>
+</div>
+<div id="0336df8a" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb66"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>pattern_vb  <span class="op">=</span> <span class="vs">r'''</span></span>
+<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a><span class="kw">(</span><span class="vs">&lt;p</span><span class="pp">[^&gt;]</span><span class="op">*?</span><span class="vs">&gt;</span><span class="kw">)</span><span class="op">?</span><span class="vs"> </span><span class="co"># find and capture &lt;p&gt; if it is there.  Allows for intermediate characters after p but only up to &gt;</span></span>
+<span id="cb66-3"><a href="#cb66-3" aria-hidden="true" tabindex="-1"></a><span class="kw">(</span><span class="dv">\s</span><span class="op">*</span><span class="kw">)</span><span class="op">?</span><span class="kw">(</span><span class="vs">&lt;a</span><span class="pp">[^&gt;]</span><span class="op">*?</span><span class="vs">&gt;</span><span class="kw">)</span><span class="vs"> </span><span class="co"># Find the &lt;a and any href and class values up to the first &gt;.  Optional</span></span>
+<span id="cb66-4"><a href="#cb66-4" aria-hidden="true" tabindex="-1"></a><span class="vs">https</span><span class="op">?</span><span class="vs">://</span>(?:<span class="vs">www</span><span class="ch">\.</span>)<span class="op">?</span>(?:<span class="vs">youtu</span><span class="ch">\.</span><span class="vs">be/</span><span class="cf">|</span><span class="vs">youtube</span><span class="ch">\.</span><span class="vs">com/watch</span><span class="ch">\?</span><span class="vs">v=</span>)<span class="kw">(</span><span class="fu">?P&lt;index&gt;</span><span class="pp">[A-Za-z0-9_-]</span><span class="op">{11}</span><span class="kw">)</span><span class="vs"> </span><span class="co"># Catch the index of the youtube video</span></span>
+<span id="cb66-5"><a href="#cb66-5" aria-hidden="true" tabindex="-1"></a><span class="kw">(</span><span class="vs">&lt;/a&gt;</span><span class="kw">)</span><span class="op">?</span><span class="vs"> </span><span class="co"># Catch the terminating a tag if it exists</span></span>
+<span id="cb66-6"><a href="#cb66-6" aria-hidden="true" tabindex="-1"></a><span class="kw">(</span><span class="vs">&lt;/p&gt;</span><span class="kw">)</span><span class="op">?</span><span class="vs"> </span><span class="co"># Catch the terminating p tag if it exists</span></span>
+<span id="cb66-7"><a href="#cb66-7" aria-hidden="true" tabindex="-1"></a><span class="vs">'''</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="87709a6e" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb67"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> match <span class="kw">in</span> re.finditer(pattern_vb, <span class="bu">str</span>(content), re.MULTILINE <span class="op">+</span> re.VERBOSE):</span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(match)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;re.Match object; span=(126, 334), match='&lt;p class="text-lg leading-relaxed mb-6 text-lg le&gt;</code></pre>
+</div>
+</div>
+<div id="33e41dba" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb69"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>match[<span class="dv">0</span>], match[<span class="st">'index'</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="148">
+<pre><code>('&lt;p class="text-lg leading-relaxed mb-6 text-lg leading-relaxed mb-6"&gt;&lt;a href="https://youtu.be/92xb0kbj2OM" class="uk-link text-primary hover:text-primary-focus underline"&gt;https://youtu.be/92xb0kbj2OM&lt;/a&gt;&lt;/p&gt;',
+ '92xb0kbj2OM')</code></pre>
+</div>
+</div>
+<div id="4c2ac156" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb71"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>match[<span class="dv">1</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="149">
+<pre><code>'&lt;p class="text-lg leading-relaxed mb-6 text-lg leading-relaxed mb-6"&gt;'</code></pre>
+</div>
+</div>
+<div id="752ff023" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb73"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a>video_id <span class="op">=</span> match[<span class="st">'index'</span>]</span>
+<span id="cb73-2"><a href="#cb73-2" aria-hidden="true" tabindex="-1"></a>video_id</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="150">
+<pre><code>'92xb0kbj2OM'</code></pre>
+</div>
+</div>
+<div id="3dca83a0" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb75"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a>iframe <span class="op">=</span> Iframe(src<span class="op">=</span><span class="ss">f"https://www.youtube.com/embed/</span><span class="sc">{</span>video_id<span class="sc">}</span><span class="ss">"</span>, title<span class="op">=</span><span class="st">"YouTube video player"</span>, frameborder<span class="op">=</span><span class="st">"0"</span>,</span>
+<span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a>                            allow<span class="op">=</span><span class="st">"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"</span>,</span>
+<span id="cb75-3"><a href="#cb75-3" aria-hidden="true" tabindex="-1"></a>                            referrerpolicy<span class="op">=</span><span class="st">"strict-origin-when-cross-origin"</span>, allowfullscreen<span class="op">=</span><span class="va">True</span>, cls<span class="op">=</span><span class="st">"w-full aspect-video rounded-lg my-6"</span>)</span>
+<span id="cb75-4"><a href="#cb75-4" aria-hidden="true" tabindex="-1"></a>iframe</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="151">
+<iframe src="https://www.youtube.com/embed/92xb0kbj2OM" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen="" class="w-full aspect-video rounded-lg my-6" title="YouTube video player"></iframe>
+</div>
+</div>
+<hr>
+</section>
+<section id="process_you_tube_embed" class="level3">
+<h3 class="anchored" data-anchor-id="process_you_tube_embed">process_you_tube_embed</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb76"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb76-2"><a href="#cb76-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> process_you_tube_embed(</span>
+<span id="cb76-3"><a href="#cb76-3" aria-hidden="true" tabindex="-1"></a>    page:NotStr</span>
+<span id="cb76-4"><a href="#cb76-4" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb76-5"><a href="#cb76-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Call self as a function.</em></p>
+<div id="9a707048" class="cell" data-hide_input="true">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb77"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a>new_content <span class="op">=</span> process_you_tube_embed(content)</span>
+<span id="cb77-2"><a href="#cb77-2" aria-hidden="true" tabindex="-1"></a>new_content</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="153">
+<pre><code>'&lt;p class="text-lg leading-relaxed mb-6 text-lg leading-relaxed mb-6"&gt;This is a test page with a youtube embeddings\nIt is:&lt;/p&gt;\n&lt;div onclick="loadYouTube(this)" data-video-id="92xb0kbj2OM" class="relative cursor-pointer"&gt;\n&lt;img src="https://img.youtube.com/vi/92xb0kbj2OM/hqdefault.jpg" class="w-full aspect-video rounded-lg my-6"&gt;&lt;/div&gt;\n\n&lt;p class="text-lg leading-relaxed mb-6 text-lg leading-relaxed mb-6"&gt;Lets see if we can find them&lt;/p&gt;\n'</code></pre>
+</div>
+</div>
+<p>I added the above to a blog post. On the page it was rendered as {{embed:https://www.youtube.com/embed/92xb0kbj2OM?autoplay=0}} with the middle section as a hyperlink, which when I clicked it opened a player but completely replaced the existing page, I think the rendering has not worked properly</p>
+<section id="reply" class="level5">
+<h5 class="anchored" data-anchor-id="reply">🤖Reply🤖<!-- SOLVEIT_SEPARATOR_7f3a9b2c --></h5>
+<p>Right — <code>{embed:...}</code> isn’t a pattern any of your processors handle, so it rendered as plain text/link. No issue there.</p>
+<p>Let’s approach the diagnostic differently. Instead of modifying a blog post, could you temporarily change the <code>process_you_tube_embed</code> function to output a direct iframe instead of the thumbnail — just to see if a bare iframe triggers the same bot check?</p>
+<p>In your <code>core_v5.py</code>, find the <code>process_you_tube_embed</code> function and temporarily change the replacement from the thumbnail <code>Div</code> to just:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb79"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a>placeholder <span class="op">=</span> to_xml(Iframe(</span>
+<span id="cb79-2"><a href="#cb79-2" aria-hidden="true" tabindex="-1"></a>    src<span class="op">=</span><span class="ss">f"https://www.youtube-nocookie.com/embed/</span><span class="sc">{</span>video_id<span class="sc">}</span><span class="ss">?autoplay=0"</span>,</span>
+<span id="cb79-3"><a href="#cb79-3" aria-hidden="true" tabindex="-1"></a>    cls<span class="op">=</span><span class="st">"w-full aspect-video rounded-lg my-6"</span>,</span>
+<span id="cb79-4"><a href="#cb79-4" aria-hidden="true" tabindex="-1"></a>    frameborder<span class="op">=</span><span class="st">"0"</span>,</span>
+<span id="cb79-5"><a href="#cb79-5" aria-hidden="true" tabindex="-1"></a>    allowfullscreen<span class="op">=</span><span class="va">True</span></span>
+<span id="cb79-6"><a href="#cb79-6" aria-hidden="true" tabindex="-1"></a>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This skips the click-to-play entirely and loads the iframe directly. If <strong>this also</strong> triggers the bot check, then YouTube is blocking based on the IP/domain rather than the interaction pattern. If it <strong>works fine</strong>, then the bot detection is related to the thumbnail + <code>autoplay</code> approach — likely YouTube checking the referrer on the autoplay’d iframe load.</p>
+<p>Want to try that?</p>
+<details class="token-usage-details">
+<summary>
+$0.0005
+</summary>
+<p><code>total=52,737 | in=52,076 | out=661 | cached=98.3% | reasoning=389 | searches=0 | $0.0005</code></p>
+</details>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb80"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a>No we tried that before we started to use the click to play.  I also tried the same <span class="kw">in</span> the test_embeds <span class="kw">and</span> it didn<span class="st">'t work there</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="reply-1" class="level5">
+<h5 class="anchored" data-anchor-id="reply-1">🤖Reply🤖<!-- SOLVEIT_SEPARATOR_7f3a9b2c --></h5>
+<p>Since a direct iframe didn’t work either, that rules out the click-to-play interaction pattern. Let’s focus on what’s different between the two apps.</p>
+<p>Both run on the same solveit instance, but the blog app has <strong>auth beforeware</strong> and <strong>HTMX navigation</strong> that <code>test_embeds</code> doesn’t. Could you check one thing in the browser dev tools?</p>
+<p>On the blog post page that fails: 1. Open the <strong>Application</strong> tab (or Storage tab in some browsers) 2. Look at <strong>Cookies</strong> → your domain (<code>turquoise-windmill-shares-nku9zd.solveit.pub</code>) 3. Do you see any cookies set there (something like <code>session</code>, <code>auth</code>, or <code>fasthtml</code>)?</p>
+<p>Then check the same on the <code>test_embeds</code> page — any cookies there?</p>
+<p>Also, can you check the <strong>Network</strong> tab and look at the <strong>full request headers</strong> for the YouTube embed request on the blog page? I’m curious if there’s an extra header like <code>Authorization</code> or an unusually large <code>Cookie</code> header being sent.</p>
+<details class="token-usage-details">
+<summary>
+$0.0006
+</summary>
+<p><code>total=53,451 | in=52,440 | out=1,011 | cached=98.4% | reasoning=782 | searches=0 | $0.0006</code></p>
+</details>
+<p>There is a session_ cookie. There are also cookies for https://www.youtube-nocookie.com. For the test_embed we have also a session_ cookie but no youtube cookie. Ironically though this is also now triggering the bot test when it wasn’t yesterday. I wonder if a large number of calls for the same movie has triggered something in the algorithms. Bottom line this is not a very robust way of doing things, maybe I am better to move to using bunny.net to serve the videos?</p>
+</section>
+<section id="reply-2" class="level5">
+<h5 class="anchored" data-anchor-id="reply-2">🤖Reply🤖<!-- SOLVEIT_SEPARATOR_7f3a9b2c --></h5>
+<p>That’s a very telling observation. If both pages now trigger the bot check — especially <code>test_embeds</code> which worked before — then YouTube has likely flagged the shared IP range of your solveit instance due to repeated embed requests. Nothing you can fix in code.</p>
+<p>Moving to <strong>bunny.net</strong> (or similar CDN) is a solid plan. It’ll give you:</p>
+<ul>
+<li>Full control over video delivery</li>
+<li>No bot checks or captchas</li>
+<li>Better performance and privacy for your visitors</li>
+<li>Ability to stream longer videos without YouTube’s restrictions</li>
+</ul>
+<p>The workflow would be: 1. Upload your videos to bunny.net’s storage 2. Use their CDN URL in your blog posts instead of YouTube URLs 3. Your existing <code>process_you_tube_embed</code> could be adapted to produce a video element pointing to your bunny URL instead</p>
+<p>Want to go ahead with that approach?</p>
+<details class="token-usage-details">
+<summary>
+$0.0004
+</summary>
+<p><code>total=53,087 | in=52,827 | out=260 | cached=97.6% | reasoning=76 | searches=0 | $0.0004</code></p>
+</details>
+<p>Yes lets do that, is it better to still use the click to load to reduce page load time or shall I simply follow the same sort of iframe embedding that I am doing for komoot?</p>
+</section>
+<section id="reply-3" class="level5">
+<h5 class="anchored" data-anchor-id="reply-3">🤖Reply🤖<!-- SOLVEIT_SEPARATOR_7f3a9b2c --></h5>
+<p>Great question! The trade-off is:</p>
+<ul>
+<li><strong>Direct embed (like Komoot)</strong>: simpler code, video starts loading with the page — better for content you want visitors to see immediately</li>
+<li><strong>Click-to-load thumbnail</strong>: saves bandwidth on page load, but requires a click — better for performance when videos aren’t the main focus</li>
+</ul>
+<p>For a blog, I’d lean toward the <strong>click-to-load approach</strong> — blog visitors tend to scan multiple posts, and lazy-loading videos keeps page loads snappy. But it’s really your call based on how you use videos in your posts.</p>
+<p>Shall we start with the simpler approach (direct embed, matching Komoot’s pattern) and you can decide later if you want to optimize further?</p>
+<details class="token-usage-details">
+<summary>
+$0.0003
+</summary>
+<p><code>total=53,304 | in=53,105 | out=199 | cached=97.9% | reasoning=50 | searches=0 | $0.0003</code></p>
+</details>
+<p>Yes lets do that. I need to upload some videos to bunny.net and create an account, what information will I need here to setup the function</p>
+</section>
+<section id="reply-4" class="level5">
+<h5 class="anchored" data-anchor-id="reply-4">🤖Reply🤖<!-- SOLVEIT_SEPARATOR_7f3a9b2c --></h5>
+<p>Once you’ve created your bunny.net account and uploaded some videos, you’ll need two pieces of info:</p>
+<ol type="1">
+<li><strong>Your CDN pull zone URL</strong> — something like <code>https://my-videos.b-cdn.net</code> — this is the base URL for serving files</li>
+<li><strong>The video filename</strong> you upload (e.g.&nbsp;<code>grassington-ride.mp4</code>)</li>
+</ol>
+<p>Your embedding function would then be quite simple — it takes a video filename, constructs the bunny CDN URL, and outputs either a <code>&lt;video&gt;</code> tag or a clickable thumbnail that loads the video.</p>
+<p>Go ahead and create the account and upload a test video, then share your pull zone URL and a filename. I’ll help you write the embedding function from there.</p>
+<details class="token-usage-details">
+<summary>
+$0.0003
+</summary>
+<p><code>total=53,542 | in=53,339 | out=203 | cached=98.1% | reasoning=50 | searches=0 | $0.0003</code></p>
+</details>
+<p>I have a bunny account. Do I need to setup a storage zone to upload file so that I can then serve them, there is the CDN but I don’t understand how to make these available, that would seem to require me to have the files on my server so that they are then loaded and made available?</p>
+</section>
+<section id="reply-5" class="level5">
+<h5 class="anchored" data-anchor-id="reply-5">🤖Reply🤖<!-- SOLVEIT_SEPARATOR_7f3a9b2c --></h5>
+<p>Good question! In bunny.net, the flow is:</p>
+<ol type="1">
+<li><strong>Storage Zone</strong> — this is where you upload your video files (like FTP). You get a storage URL and an API key/username+password.</li>
+<li><strong>Pull Zone</strong> — this is the CDN endpoint that serves your files to visitors. You connect it to your storage zone as the “origin”.</li>
+</ol>
+<p>So the steps are:</p>
+<ul>
+<li>Create a <strong>Storage Zone</strong> (e.g.&nbsp;<code>my-blog-videos</code>) — upload your .mp4 files there via FTP or their dashboard</li>
+<li>Create a <strong>Pull Zone</strong> that pulls from that storage zone — you’ll get a CDN URL like <code>https://my-blog-videos.b-cdn.net</code></li>
+<li>Then in your blog, you can serve <code>https://my-blog-videos.b-cdn.net/grassington.mp4</code></li>
+</ul>
+<p>You don’t need to keep the files on your own server — bunny stores them and serves them via their CDN.</p>
+<p>Does that help? Want to give it a try creating a storage zone?</p>
+<details class="token-usage-details">
+<summary>
+$0.0003
+</summary>
+<p><code>total=53,872 | in=53,612 | out=260 | cached=98.4% | reasoning=43 | searches=0 | $0.0003</code></p>
+</details>
+<p>I have blog-therichmond4.b-cdn.net. At present there is only one file, ‘2026_04_wharfdale.mp4’. Can we test this loads ok here</p>
+</section>
+<section id="reply-6" class="level5">
+<h5 class="anchored" data-anchor-id="reply-6">🤖Reply🤖<!-- SOLVEIT_SEPARATOR_7f3a9b2c --></h5>
+<p>Let’s test it — I’ll check if the file is reachable:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb81"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> httpx</span>
+<span id="cb81-2"><a href="#cb81-2" aria-hidden="true" tabindex="-1"></a>r <span class="op">=</span> httpx.head(<span class="st">"https://blog-therichmond4.b-cdn.net/2026_04_wharfdale.mp4"</span>)</span>
+<span id="cb81-3"><a href="#cb81-3" aria-hidden="true" tabindex="-1"></a>r.status_code</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Run that and tell me what status code you get. 200 means it’s working!</p>
+<details class="token-usage-details">
+<summary>
+$0.0025
+</summary>
+<p><code>total=44,355 | in=44,243 | out=112 | cached=73.8% | reasoning=35 | searches=0 | $0.0025</code></p>
+</details>
+<div id="35293325" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb82"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> httpx</span>
+<span id="cb82-2"><a href="#cb82-2" aria-hidden="true" tabindex="-1"></a>r <span class="op">=</span> httpx.head(<span class="st">"https://blog-therichmond4.b-cdn.net/2026_04_wharfdale.mp4"</span>)</span>
+<span id="cb82-3"><a href="#cb82-3" aria-hidden="true" tabindex="-1"></a>r.status_code</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<pre><code>200</code></pre>
+</div>
+</div>
+<p>Yes we get a 200 response</p>
+</section>
+<section id="reply-7" class="level5">
+<h5 class="anchored" data-anchor-id="reply-7">🤖Reply🤖<!-- SOLVEIT_SEPARATOR_7f3a9b2c --></h5>
+<p>200 means it’s working — the file is live on the CDN!</p>
+<p>Now you can follow a similar pattern to your Strava/Komoot embedding. In your markdown, decide on a syntax for videos — for example <code>{bunny:2026_04_wharfdale.mp4}</code> — and then write a <code>process_bunny_embed()</code> function that:</p>
+<ol type="1">
+<li>Catches that pattern in the rendered page</li>
+<li>Replaces it with a <code>&lt;video&gt;</code> tag pointing at your CDN URL</li>
+</ol>
+<p>Want to have a go at writing the replacement function? You can base it on how <code>process_komoot_embed</code> works.</p>
+<details class="token-usage-details">
+<summary>
+$0.0004
+</summary>
+<p><code>total=44,698 | in=44,469 | out=229 | cached=96.4% | reasoning=92 | searches=0 | $0.0004</code></p>
+</details>
+<p>Which type of video files with most browsers work with. I know .mp4 is ok, any others</p>
+</section>
+<section id="reply-8" class="level5">
+<h5 class="anchored" data-anchor-id="reply-8">🤖Reply🤖<!-- SOLVEIT_SEPARATOR_7f3a9b2c --></h5>
+<p>The big three that work across all modern browsers:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 22%">
+<col style="width: 51%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Format</th>
+<th>Codec</th>
+<th>Browser support</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>.mp4</strong></td>
+<td>H.264</td>
+<td>Universal — everything supports it</td>
+</tr>
+<tr class="even">
+<td><strong>.webm</strong></td>
+<td>VP8/VP9</td>
+<td>Chrome, Firefox, Edge, Opera (not Safari natively)</td>
+</tr>
+<tr class="odd">
+<td><strong>.ogg/.ogv</strong></td>
+<td>Theora</td>
+<td>Firefox, Chrome, Edge (dropped by Safari)</td>
+</tr>
+</tbody>
+</table>
+<p>For practical purposes, <strong>.mp4</strong> is the safe choice — it works everywhere and bunny.net will serve it just fine. If you want to be thorough, you can supply both an mp4 and webm version in a <code>&lt;video&gt;</code> element with multiple <code>&lt;source&gt;</code> tags, but that’s overkill for a blog.</p>
+<p>Stick with mp4 and you’re good. Want to draft your embedding function now?</p>
+<details class="token-usage-details">
+<summary>
+$0.0003
+</summary>
+<p><code>total=44,886 | in=44,684 | out=202 | cached=98.0% | reasoning=22 | searches=0 | $0.0003</code></p>
+</details>
+<hr>
+</section>
+</section>
+<section id="process_bunny_embed" class="level3">
+<h3 class="anchored" data-anchor-id="process_bunny_embed">process_bunny_embed</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb84"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb84-2"><a href="#cb84-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> process_bunny_embed(</span>
+<span id="cb84-3"><a href="#cb84-3" aria-hidden="true" tabindex="-1"></a>    page:NotStr</span>
+<span id="cb84-4"><a href="#cb84-4" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb84-5"><a href="#cb84-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Call self as a function.</em></p>
+<div id="781d6911" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb85"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a>page_with_bunny <span class="op">=</span> Str(process_bunny_embed(NotStr(rendered_bunny)))</span>
+<span id="cb85-2"><a href="#cb85-2" aria-hidden="true" tabindex="-1"></a>page_with_bunny</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="156">
+<pre><code>'&lt;p class="text-lg leading-relaxed mb-6 text-lg leading-relaxed mb-6"&gt;This is a test post excerpt to check the detection of embedded bunny links with the correct format&lt;/p&gt;\n&lt;video controls width="100%"&gt;\n  &lt;source src="https://blog-therichmond4.b-cdn.net/2026_04_wharfdale.mp4" type="video/mp4"&gt;\n&lt;/video&gt;\n&lt;p class="text-lg leading-relaxed mb-6 text-lg leading-relaxed mb-6"&gt;And also the other type of video that I will work with:&lt;/p&gt;\n&lt;video controls width="100%"&gt;\n  &lt;source src="https://blog-therichmond4.b-cdn.net/2026_04_wharfdale.webm" type="video/webm"&gt;\n&lt;/video&gt;\n&lt;p class="text-lg leading-relaxed mb-6 text-lg leading-relaxed mb-6"&gt;Lets see if we can correctly extract these&lt;/p&gt;\n'</code></pre>
+</div>
+</div>
+<p>Does the above look ok?</p>
+<section id="reply-9" class="level5">
+<h5 class="anchored" data-anchor-id="reply-9">🤖Reply🤖<!-- SOLVEIT_SEPARATOR_7f3a9b2c --></h5>
+<p>Looks good! The test output shows it’s working correctly — the <code>{bunny:2026_04_wharfdale.mp4}</code> and <code>{bunny:2026_04_wharfdale.webm}</code> are both being replaced with proper <code>&lt;video&gt;</code> tags pointing at your CDN.</p>
+<p>One small thing I noticed: you assign <code>height = "700"</code> but never use it — feel free to drop that line. Also, you might want to add hyphens to the filename character class in case you ever use filenames like <code>2026-04_wharfdale.mp4</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb87"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a>[A<span class="op">-</span>Za<span class="op">-</span>z0<span class="op">-</span><span class="dv">9</span><span class="er">_</span><span class="op">-</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Other than that, ready to wire this into your blogpost route alongside the other embed processors. Want to add it there?</p>
+<details class="token-usage-details">
+<summary>
+$0.0004
+</summary>
+<p><code>total=45,840 | in=45,399 | out=441 | cached=97.8% | reasoning=270 | searches=0 | $0.0004</code></p>
+</details>
+<p>Thanks, I presume the player will play at a fixed output scale or will the browser adapt this?</p>
+</section>
+<section id="reply-10" class="level5">
+<h5 class="anchored" data-anchor-id="reply-10">🤖Reply🤖<!-- SOLVEIT_SEPARATOR_7f3a9b2c --></h5>
+<p>Good call — since you set <code>width="100%"</code> on the <code>&lt;video&gt;</code> tag, the browser <strong>will</strong> adapt it to the width of its container (the blog post area). The height will scale proportionally based on the video’s aspect ratio automatically.</p>
+<p>The <code>controls</code> attribute also gives the user play/pause, volume, and fullscreen controls, so on mobile they can go fullscreen if needed.</p>
+<p>You’re all set. Want to wire <code>process_bunny_embed</code> into the blogpost route now?</p>
+<details class="token-usage-details">
+<summary>
+$0.0003
+</summary>
+<p><code>total=45,839 | in=45,644 | out=195 | cached=97.3% | reasoning=87 | searches=0 | $0.0003</code></p>
+</details>
+<div id="4a9cb09f" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb88"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a>test_bunny_content <span class="op">=</span> <span class="st">'''</span></span>
+<span id="cb88-2"><a href="#cb88-2" aria-hidden="true" tabindex="-1"></a><span class="st">This is a test post excerpt to check the detection of embedded bunny links with the correct format</span></span>
+<span id="cb88-3"><a href="#cb88-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-4"><a href="#cb88-4" aria-hidden="true" tabindex="-1"></a><span class="sc">{{</span><span class="st">bunny:2026_04_wharfdale.mp4</span><span class="sc">}}</span></span>
+<span id="cb88-5"><a href="#cb88-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-6"><a href="#cb88-6" aria-hidden="true" tabindex="-1"></a><span class="st">And also the other type of video that I will work with:</span></span>
+<span id="cb88-7"><a href="#cb88-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-8"><a href="#cb88-8" aria-hidden="true" tabindex="-1"></a><span class="sc">{{</span><span class="st">bunny:2026_04_wharfdale.webm</span><span class="sc">}}</span></span>
+<span id="cb88-9"><a href="#cb88-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-10"><a href="#cb88-10" aria-hidden="true" tabindex="-1"></a><span class="st">Lets see if we can correctly extract these</span></span>
+<span id="cb88-11"><a href="#cb88-11" aria-hidden="true" tabindex="-1"></a><span class="st">'''</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="9ab65b20" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb89"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a>rendered_bunny <span class="op">=</span> render_md(test_bunny_content, renderer<span class="op">=</span>EnhancedRenderer)</span>
+<span id="cb89-2"><a href="#cb89-2" aria-hidden="true" tabindex="-1"></a>rendered_bunny</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="158">
+<pre><code>'&lt;p class="text-lg leading-relaxed mb-6 text-lg leading-relaxed mb-6"&gt;This is a test post excerpt to check the detection of embedded bunny links with the correct format&lt;/p&gt;\n&lt;p class="text-lg leading-relaxed mb-6 text-lg leading-relaxed mb-6"&gt;{{bunny:2026_04_wharfdale.mp4}}&lt;/p&gt;\n&lt;p class="text-lg leading-relaxed mb-6 text-lg leading-relaxed mb-6"&gt;And also the other type of video that I will work with:&lt;/p&gt;\n&lt;p class="text-lg leading-relaxed mb-6 text-lg leading-relaxed mb-6"&gt;{{bunny:2026_04_wharfdale.webm}}&lt;/p&gt;\n&lt;p class="text-lg leading-relaxed mb-6 text-lg leading-relaxed mb-6"&gt;Lets see if we can correctly extract these&lt;/p&gt;\n'</code></pre>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="sitemap" class="level3">
+<h3 class="anchored" data-anchor-id="sitemap">sitemap</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb91"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb91-2"><a href="#cb91-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> sitemap(</span>
+<span id="cb91-3"><a href="#cb91-3" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb91-4"><a href="#cb91-4" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb91-5"><a href="#cb91-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Call self as a function.</em></p>
+<div id="cf0669ad" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb92"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a><span class="at">@route</span>(<span class="st">'/googleada316577537ad2b.html'</span>)</span>
+<span id="cb92-2"><a href="#cb92-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get(): <span class="cf">return</span> <span class="st">'google-site-verification: googleada316577537ad2b.html'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="add-a-sitemap-generator" class="level4">
+<h4 class="anchored" data-anchor-id="add-a-sitemap-generator">Add a sitemap generator</h4>
+<p>Custom markdown renderer that extends <code>FrankenRenderer</code>. Automatically adds <code>target="_blank"</code> and <code>rel="noopener noreferrer"</code> to external links (http/https).</p>
+<p>I think it would be fine to create yt_hdrs in the cell above the create_app and then inject it as you suggest with the *yt_hdrs in create_app. Do you think this will work ok?</p>
+</section>
+</section>
+<section id="export" class="level3">
+<h3 class="anchored" data-anchor-id="export">Export</h3>
+<div id="51f955a4" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb93"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a>nbdev.nbdev_export()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Exports all cells marked with <code>#| export</code> to the <code>my_blog/core_v5.py</code> module file.</p>
+<p>rhe process_you_tube_embed function successfully generates an iframe but when the user clicks it if runs into youtubes bot protection and asks the user to log in, which isnt possible within the iframe. i tried changind some settings to get past this. but its still not working. one suggested solution was to have a placeholder image and then when that is clicked swop it out for an iframe set to autostart. they suggested doing this with javascriot but i dont see why i cant do it with htmx. please discuss ways forward but dont implement anything yet</p>
+<p>yes it occurs on the live site. options 2 and 3 seem the most sensibel, could you outline what i would need to do for each and which is most likely to work</p>
+<p>i would prefer the template approach. im not very comfortable with hyperscript but it looks as though its the best option here so you can talk me through it with explanation</p>
+<p>lets go with iotion2</p>
+<p>yes lets go shared template</p>
+<p>i have no experience of js and so for this it would be better if you write it</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/fromLittleAcorns\.github\.io\/my-blog");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/fromLittleAcorns/my-blog/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
