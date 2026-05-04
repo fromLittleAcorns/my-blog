@@ -79,4 +79,9 @@ ANALYTICS_ENABLED = os.getenv("ANALYTICS_ENABLED", "false")
 # ============================================
 ORIGIN = os.getenv("ORIGIN", "blog.therichmond4.co.uk")
 
+# ============================================
+# CDN SERVER Settings
+# ============================================
+CDN = os.getenv("CDN", "blog-therichmond4.b-cdn.net")
+
 

@@ -8,7 +8,8 @@ __all__ = ['yt_hdrs', 'AppState', 'create_database_tables', 'create_post_databas
            'get_post_image', 'check_if_admin', 'post_card', 'add_post', 'process_upload', 'get', 'save_pending',
            'load_pending', 'clear_pending', 'do_upload', 'post', 'rewrite_image_paths', 'convert_obsidian_images',
            'load_md_file', 'about_content', 'about', 'EnhancedRenderer', 'strava_embed', 'process_strava_embeddings',
-           'process_komoot_embed', 'process_obsidian_images', 'process_you_tube_embed', 'sitemap']
+           'process_komoot_embed', 'process_obsidian_images', 'process_you_tube_embed', 'process_bunny_embed',
+           'sitemap']
 
 # %% ../nbs/05_blog_v5.ipynb #6a381e96
 from fastlite import Database
@@ -126,6 +127,73 @@ def create_app():
         Script(src="https://www.googletagmanager.com/gtag/js?id=G-DP7YB96KHH", async_=True),
         Script("window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-DP7YB96KHH');"),
         *yt_hdrs,
+        Link(rel="icon", type="image/png", href="/static/image/john_pixelated.png"))
+    app = FastHTML(
+        before=beforeware,
+        secret_key=config.SECRET_KEY,
+        hdrs=hdrs,
+        exts='ws'  # Enable WebSocket support
+    )
+    config.STATIC_DIR.mkdir(parents=True, exist_ok=True)
+    app.mount("/static", StaticFiles(directory=str(config.STATIC_DIR)), name="static")
+    auth.setup_oauth(app=app, redirect_url=config.OAUTH_REDIRECT, allow_oauth_user_create=False)
+    auth.register_routes(app, include_admin=True)
+    state = AppState(
+        pdb=pdb,
+        posts_t=posts_t,
+        tags_t=tags_t,
+        post_tags_t=post_tags_t,
+        auth=auth,
+        db=db
+    )
+    return app, state
+
+# %% ../nbs/05_blog_v5.ipynb #169ca000
+def create_app():
+    # Create databases and apps, return these within and AppState class.
+    # Once created then create the server with srv = serve()
+    # Add the routes with rt = app.route
+    pdb = create_post_database(config.POSTS_DB_PATH)
+    posts_t = pdb.t.posts
+    tags_t = pdb.t.tags
+    post_tags_t = pdb.t.post_tags
+    # Initialize auth database
+    auth = AuthManager(
+        db_path=str(config.USERS_DB_PATH),
+        config={
+            'allow_registration': config.ALLOW_REGISTRATION,
+            'public_paths': ['/', '/about', r'/blog.*', r'/post.*', '/googleada316577537ad2b.html', '/sitemap.xml'],  # Let anybody see the site apart from the admin and auth routes
+            'login_path': '/auth/login',
+        }
+    )
+    db = auth.initialize()
+    # Set db password
+    admin = auth.get_user(config.ADMIN_USERNAME)
+    if admin and config.ADMIN_PASSWORD: auth.user_repo.update(admin.id, password=config.ADMIN_PASSWORD, email=config.ADMIN_EMAIL)
+    beforeware = auth.create_beforeware()
+    hdrs = (*Theme.blue.headers(highlightjs=True), Script(src="https://unpkg.com/hyperscript.org@0.9.12"),
+        Script(src="https://www.googletagmanager.com/gtag/js?id=G-DP7YB96KHH", async_=True),
+        Script("window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-DP7YB96KHH');"),
+        Script("""
+function loadYouTube(el) {
+    var tmpl = document.getElementById('yt-template');
+    var iframe = tmpl.content.firstElementChild.cloneNode(true);
+    var id = el.getAttribute('data-video-id');
+    iframe.src = "https://www.youtube-nocookie.com/embed/" + id + "?autoplay=1&origin=" + window.location.origin;
+    el.replaceWith(iframe);
+}
+"""),
+        Template(
+            Iframe(
+                frameborder="0",
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share",
+                referrerpolicy="strict-origin-when-cross-origin",
+                allowfullscreen=True,
+                cls="w-full aspect-video rounded-lg my-6",
+                title="YouTube video player"
+            ),
+            id="yt-template"
+        ),
         Link(rel="icon", type="image/png", href="/static/image/john_pixelated.png"))
     app = FastHTML(
         before=beforeware,
@@ -280,7 +348,8 @@ def blogpost(htmx, req, slug: str):
     content = process_obsidian_images(content, image_base=image_base)
     content = process_strava_embeddings(content)
     content = process_komoot_embed(content)
-    content = process_you_tube_embed(content)
+    content = process_bunny_embed(content)
+    # content = process_you_tube_embed(content)
     admin_btns = Div(
         A("Edit", href=f'/admin/edit/{slug}', cls="uk-btn uk-btn-default uk-btn-xs"),
         # Button("Delete", hx_post=f"/admin/delete/{p['slug']}", hx_confirm="Delete this post?", 
@@ -777,6 +846,26 @@ https?://(?:www\.)?(?:youtu\.be/|youtube\.com/watch\?v=)(?P<index>[A-Za-z0-9_-]{
             placeholder = to_xml(placeholder)
             page = page.replace(match.group(0), placeholder)
         return NotStr(page)
+
+# %% ../nbs/05_blog_v5.ipynb #1a18d072
+def process_bunny_embed(page: NotStr):
+    page = str(page)
+    pattern = r'''
+    (<p[^>]*>)? # find and capture <p> if it is there.  Allows for intermediate characters after p but only up to >
+    (\s*)? # Optional spaces between the tag and the start of the embedded code
+    \{\{bunny:(?P<name>[A-Za-z0-9_]+)(?P<suffix>(\.mp4|\.webm))\}\} # catch the brackets, the name of the file and the suffix
+    (\s*)?(</p>)? # Optional space after the brackets before the termination of the p tag
+    '''
+    
+    def replace_bunny(match):
+        file_name = match['name'] + match['suffix']
+        video_type = match['suffix'][1:]
+        src = f"https://{config.CDN}/{file_name}"
+        ret_value = '<video controls width="100%">\n' + f'  <source src="https://{config.CDN}/{file_name}" type="video/{video_type}">\n' + '</video>'
+        return ret_value
+    
+    page = re.sub(pattern, replace_bunny, page, flags=re.VERBOSE + re.MULTILINE)
+    return NotStr(page)
 
 # %% ../nbs/05_blog_v5.ipynb #b47e6237
 @route('/sitemap.xml')
