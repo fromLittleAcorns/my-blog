@@ -5,11 +5,11 @@ __all__ = ['yt_hdrs', 'AppState', 'create_database_tables', 'create_post_databas
            'logout', 'intro', 'hx_attrs', 'hx_link', 'is_logged_in', 'navbar', 'x_icon', 'social_link', 'footer',
            'layout', 'slug_exists', 'get_slug', 'blogpost', 'index', 'get_tags', 'get_post_tags', 'get_posts',
            'tag_pill', 'tag_filter', 'tag_badge', 'decode_tag_str', 'sentinal', 'blog', 'get_more_posts',
-           'get_post_image', 'check_if_admin', 'post_card', 'add_post', 'process_upload', 'get', 'save_pending',
-           'load_pending', 'clear_pending', 'do_upload', 'post', 'rewrite_image_paths', 'convert_obsidian_images',
-           'load_md_file', 'about_content', 'about', 'EnhancedRenderer', 'strava_embed', 'process_strava_embeddings',
-           'process_komoot_embed', 'process_obsidian_images', 'process_you_tube_embed', 'process_bunny_embed',
-           'sitemap']
+           'get_post_image', 'check_if_admin', 'post_card', 'add_post', 'process_upload', 'create_poster_image',
+           'create_save_poster', 'get', 'save_pending', 'load_pending', 'clear_pending', 'do_upload', 'post',
+           'rewrite_image_paths', 'convert_obsidian_images', 'load_md_file', 'about_content', 'about',
+           'EnhancedRenderer', 'strava_embed', 'process_strava_embeddings', 'process_komoot_embed',
+           'process_obsidian_images', 'process_you_tube_embed', 'process_bunny_embed', 'sitemap']
 
 # %% ../nbs/05_blog_v5.ipynb #6a381e96
 from fastlite import Database
@@ -21,8 +21,10 @@ from fasthtml.common import *
 from monsterui.all import *
 from fasthtml_auth import AuthManager
 from fasthtml.jupyter import *
+import ffmpeg
 import re
 import frontmatter
+import my_blog.config as config
 
 # %% ../nbs/05_blog_v5.ipynb #3a049b85
 @dataclass
@@ -348,7 +350,7 @@ def blogpost(htmx, req, slug: str):
     content = process_obsidian_images(content, image_base=image_base)
     content = process_strava_embeddings(content)
     content = process_komoot_embed(content)
-    content = process_bunny_embed(content)
+    content = process_bunny_embed(content, slug)
     # content = process_you_tube_embed(content)
     admin_btns = Div(
         A("Edit", href=f'/admin/edit/{slug}', cls="uk-btn uk-btn-default uk-btn-xs"),
@@ -556,6 +558,7 @@ def add_post(title, content, excerpt="", tags=None, published=True, created=None
     post_tags = state.pdb.t.post_tags
     now = datetime.now()
     post_id = slug_exists(slug)
+    create_save_poster(content, slug)
     if post_id:
         post = posts.update(dict(id=post_id, title=title, slug=slug, content=content, excerpt=excerpt,
                                  created=created or now, updated=now, published=published, private=private))
@@ -611,6 +614,51 @@ def process_upload(content: bytes, filename: str, slug:str=None, overwrite: bool
         return True, f"File {path_to_save.name} saved", slug
     else:
         return False, f"Unknown file type {file_path.suffix}", slug
+
+# %% ../nbs/05_blog_v5.ipynb #88b7a955
+def create_poster_image(url, path_to_save):
+    # Create a function to find instances of bunny.net video in the post and if they exist then create and save a thumbnail.  
+    # The thumbnail will be saved in the folder static/posters/{slug}/{name}_poster.jpg
+    try:
+        out, _ = (
+            ffmpeg.input(url, ss=0)
+            .output(str(path_to_save), vframes=1, loglevel='error')
+            .run(overwrite_output=True)
+        )
+        return True
+    except Exception as e:
+        print(f"Image processing exception: {e}")
+        return False
+
+# %% ../nbs/05_blog_v5.ipynb #f0d0b330
+def create_save_poster(content: NotStr, slug: str):
+    # Extract all of the bunny.net embeddings {{bunny:filename}}
+    # For each instance create the CDN URL
+    # Create a thumbnail using the URL an ffmpeg
+    # Save the thumbnail using the slug
+
+    content = str(content)
+    pattern = r'''
+(<p[^>]*>)? # find and capture <p> if it is there.  Allows for intermediate characters after p but only up to >
+(\s*)? # Optional spaces between the tag and the start of the embedded code
+\{\{bunny:(?P<name>[A-Za-z0-9_]+)(?P<suffix>(\.mp4|\.webm))\}\} # catch the brackets, the name of the file and the suffix
+(\s*)?(</p>)? # Optional space after the brackets before the termination of the p tag
+'''
+
+    def generate_save_poster(match):
+        file_name = match['name']
+        suffix = match['suffix']
+        dir_full_path = config.POSTER_DIR / slug
+        dir_full_path.mkdir(exist_ok=True)
+        path_to_save = dir_full_path / Path(file_name+config.POSTER_SUFFIX+'.jpg')
+        url = f"https://{config.CDN}/{file_name+suffix}"
+
+        result = create_poster_image(url, path_to_save)
+        if not result:
+            print(f'error proessing poster: (file_name)')
+
+    # find all occurences
+    content = re.sub(pattern, generate_save_poster, content, flags=re.VERBOSE + re.MULTILINE)
 
 # %% ../nbs/05_blog_v5.ipynb #ec27541d
 @route('/admin/upload')
@@ -847,8 +895,8 @@ https?://(?:www\.)?(?:youtu\.be/|youtube\.com/watch\?v=)(?P<index>[A-Za-z0-9_-]{
             page = page.replace(match.group(0), placeholder)
         return NotStr(page)
 
-# %% ../nbs/05_blog_v5.ipynb #1a18d072
-def process_bunny_embed(page: NotStr):
+# %% ../nbs/05_blog_v5.ipynb #2f09c5b6
+def process_bunny_embed(page: NotStr, slug: str):
     page = str(page)
     pattern = r'''
     (<p[^>]*>)? # find and capture <p> if it is there.  Allows for intermediate characters after p but only up to >
@@ -858,10 +906,15 @@ def process_bunny_embed(page: NotStr):
     '''
     
     def replace_bunny(match):
-        file_name = match['name'] + match['suffix']
+        file_name = match['name']
+        suffix = match['suffix']
         video_type = match['suffix'][1:]
-        src = f"https://{config.CDN}/{file_name}"
-        ret_value = '<video controls width="100%">\n' + f'  <source src="https://{config.CDN}/{file_name}" type="video/{video_type}">\n' + '</video>'
+        src = f"https://{config.CDN}/{file_name+suffix}"
+        poster_path = config.PROJECT_ROOT / config.POSTER_DIR / slug / Path(file_name+config.POSTER_SUFFIX + '.jpg')
+        with open(poster_path, 'rb') as f:
+            raw_bytes = f.read()
+        poster = f"data:image/jpeg;base64,{base64.b64encode(raw_bytes).decode()}"
+        ret_value = f'<video controls width="100%" poster="{poster}">\n  <source src="{src}" type="video/{video_type}">\n</video>'
         return ret_value
     
     page = re.sub(pattern, replace_bunny, page, flags=re.VERBOSE + re.MULTILINE)

@@ -18,6 +18,7 @@ STATIC_DIR = Path(os.environ.get('STATIC_DIR', PROJECT_ROOT / 'static'))
 DATA_DIR = Path(os.environ.get('DATA_DIR', BASE_DIR / 'data'))
 IMAGE_DIR = STATIC_DIR / 'image'
 POST_IMAGE_DIR = IMAGE_DIR / 'post_images'
+POSTER_DIR = STATIC_DIR / 'poster'
 TEST_DIR = Path(PROJECT_ROOT / 'test')
 
 # Ensure data directory exists
@@ -26,6 +27,7 @@ DATA_DIR.mkdir(exist_ok=True)
 STATIC_DIR.mkdir(exist_ok=True)
 IMAGE_DIR.mkdir(exist_ok=True)
 POST_IMAGE_DIR.mkdir(exist_ok=True)
+POSTER_DIR.mkdir(exist_ok=True)
 
 USERS_DB_NAME = os.environ.get('USERS_DB_NAME', 'users.db') 
 USERS_DB_PATH = DATA_DIR / USERS_DB_NAME
@@ -59,6 +61,8 @@ ADMIN_EMAIL = os.getenv("ADMIN_EMAIL", "")
 # ============================================
 # Application Settings
 # ============================================
+# Poster parameters
+POSTER_SUFFIX = '_poster'
 
 # Development mode
 DEBUG = os.getenv("DEBUG", "False").lower() == "true"
