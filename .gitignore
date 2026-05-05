@@ -22,7 +22,7 @@ data/
 
 # Post files
 static/image/post_images
-statis/poster
+static/poster/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
