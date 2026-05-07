@@ -9,7 +9,8 @@ __all__ = ['yt_hdrs', 'AppState', 'create_database_tables', 'create_post_databas
            'create_save_poster', 'get', 'save_pending', 'load_pending', 'clear_pending', 'do_upload', 'post',
            'rewrite_image_paths', 'convert_obsidian_images', 'load_md_file', 'about_content', 'about',
            'EnhancedRenderer', 'strava_embed', 'process_strava_embeddings', 'process_komoot_embed',
-           'process_obsidian_images', 'process_you_tube_embed', 'process_bunny_embed', 'sitemap']
+           'process_obsidian_images', 'process_gallery', 'preprocess_markdown', 'process_you_tube_embed',
+           'process_bunny_embed', 'sitemap']
 
 # %% ../nbs/05_blog_v5.ipynb #6a381e96
 from fastlite import Database
@@ -345,9 +346,9 @@ def blogpost(htmx, req, slug: str):
     if p.get('private') and not logged_in:
         return layout(req, H2("Not Found"), P("Please login to access this post."), title="Private post", htmx=htmx)
     p['created'] = datetime.fromisoformat(p['created']) if isinstance(p['created'], str) else p['created']
-    content = render_md(p['content'], renderer=EnhancedRenderer)
     image_base = f"/static/image/post_images/{slug}"
-    content = process_obsidian_images(content, image_base=image_base)
+    content = preprocess_markdown(p['content'], image_base=image_base)
+    content = render_md(content, renderer=EnhancedRenderer)
     content = process_strava_embeddings(content)
     content = process_komoot_embed(content)
     content = process_bunny_embed(content, slug)
@@ -630,35 +631,38 @@ def create_poster_image(url, path_to_save):
         print(f"Image processing exception: {e}")
         return False
 
-# %% ../nbs/05_blog_v5.ipynb #f0d0b330
+# %% ../nbs/05_blog_v5.ipynb #d2dbefaf
 def create_save_poster(content: NotStr, slug: str):
-    # Extract all of the bunny.net embeddings {{bunny:filename}}
-    # For each instance create the CDN URL
-    # Create a thumbnail using the URL an ffmpeg
-    # Save the thumbnail using the slug
-
     content = str(content)
     pattern = r'''
-(<p[^>]*>)? # find and capture <p> if it is there.  Allows for intermediate characters after p but only up to >
-(\s*)? # Optional spaces between the tag and the start of the embedded code
-\{\{bunny:(?P<name>[A-Za-z0-9_]+)(?P<suffix>(\.mp4|\.webm))\}\} # catch the brackets, the name of the file and the suffix
-(\s*)?(</p>)? # Optional space after the brackets before the termination of the p tag
-'''
+    (<p[^>]*>)?
+    (\s*)?
+    \{\{bunny:(?P<path>[A-Za-z0-9_/-]*/)?(?P<name>[A-Za-z0-9_]+)(?P<suffix>(\.mp4|\.webm))\}\}
+    (\s*)?
+    (</p>)?
+    '''
 
     def generate_save_poster(match):
+        path = match['path'] or ''
         file_name = match['name']
         suffix = match['suffix']
+        
+        # Build unique poster filename: folder_path_filename_poster.jpg
+        path_prefix = path.replace('/', '_') if path else ''
+        poster_name = f"{path_prefix}{file_name}{config.POSTER_SUFFIX}.jpg"
+        
         dir_full_path = config.POSTER_DIR / slug
         dir_full_path.mkdir(exist_ok=True)
-        path_to_save = dir_full_path / Path(file_name+config.POSTER_SUFFIX+'.jpg')
-        url = f"https://{config.CDN}/{file_name+suffix}"
+        path_to_save = dir_full_path / poster_name
+        
+        url = f"https://{config.CDN}/{path}{file_name}{suffix}"
 
         result = create_poster_image(url, path_to_save)
         if not result:
-            print(f'error proessing poster: (file_name)')
+            print(f'error processing poster: {file_name}')
 
-    # find all occurences
     content = re.sub(pattern, generate_save_poster, content, flags=re.VERBOSE + re.MULTILINE)
+
 
 # %% ../nbs/05_blog_v5.ipynb #ec27541d
 @route('/admin/upload')
@@ -835,42 +839,70 @@ def process_komoot_embed(page: NotStr):
     page = re.sub(pattern, replace_komoot, page)
     return NotStr(page)
 
-# %% ../nbs/05_blog_v5.ipynb #ffe15f8f
-def process_obsidian_images(page: NotStr, image_base: str) -> NotStr:
-    page = str(page)
-    pattern = new3 = r'''!\[\[(?P<image>[^\]]+\.(jpg|jpeg|png|gif|svg)) # Image part, must be present
-(?:\|(?P<size1>\d+))? # First size dimension (with leading pipe symbol (optional)
-(?:x(?P<size2>\d+))? # Second size dimension (with leading x)
-(?:\|(?P<location>left|right|center))?
-\]\] # End of image (must be present)
-'''
-    
-    for match in re.finditer(pattern, page, re.MULTILINE + re.VERBOSE):
+# %% ../nbs/05_blog_v5.ipynb #907bde85
+def process_obsidian_images(content: str, image_base: str) -> str:
+    pattern = r'''
+        !\[\[(?P<image>[^\]\n]+\.(?:jpg|jpeg|png|gif|svg))
+        (?:\|(?P<size1>\d+))?
+        (?:x(?P<size2>\d+))?
+        (?:\|(?P<location>left|right|center))?
+        \]\]
+        (?:\n>\s*(?P<caption>[^\n]+))?
+    '''
+
+    def make_element(match):
         m = match.groupdict()
-        
-        # 1. Build src path
         src = f"{image_base}/{m['image']}"
-        
-        # 2. Build style string from size1, size2, location
-        styles = []
-        if m['size1']:
-            styles.append(f"width: {m['size1']}px")
-        if m['size2']:
-            styles.append(f"height: {m['size2']}px")
-        if m['location'] == 'center':
-            styles.append("display: block; margin: auto")
-        elif m['location'] == 'right':
-            styles.append("float: right; margin-left: 1rem")
-        elif m['location'] == 'left':
-            styles.append("float: left; margin-right: 1rem")
-        
-        style_str = "; ".join(styles)
-        
-        # 3. Build img tag and replace
-        img_tag = f'<img src="{src}" style="{style_str}">'
-        page = page.replace(match.group(0), img_tag)
-    
-    return NotStr(page)
+        loc = m.get('location')
+
+        img_styles = []
+        if m['size1']: img_styles.append(f"width: {m['size1']}px")
+        if m['size2']: img_styles.append(f"height: {m['size2']}px")
+
+        wrap_styles = []
+        if loc == 'right':    wrap_styles = ['float: right', 'margin-left: 1rem']
+        elif loc == 'left':   wrap_styles = ['float: left', 'margin-right: 1rem']
+        elif loc == 'center': wrap_styles = ['display: block', 'margin: auto']
+
+        # elif loc == 'center': wrap_styles = ['display: block', 'margin: auto', 'text-align: center']
+
+        caption = m.get('caption')
+        if caption:
+            wrap_style = f' style="{"; ".join(wrap_styles)}"' if wrap_styles else ''
+            img_style = f' style="{"; ".join(img_styles)}"' if img_styles else ''
+            return (f'<figure{wrap_style}>\n'
+                    f'<img src="{src}"{img_style}>\n'
+                    f'<figcaption style="font-size:0.85em; color:#666; text-align:center">{caption.strip()}</figcaption>\n'
+                    f'</figure>')
+
+        all_styles = img_styles + wrap_styles
+        style = f' style="{"; ".join(all_styles)}"' if all_styles else ''
+        return f'<img src="{src}"{style}>'
+
+    return re.sub(pattern, make_element, content, flags=re.MULTILINE + re.VERBOSE)
+
+# %% ../nbs/05_blog_v5.ipynb #14861dcb
+def process_gallery(content: str) -> str:
+    """Find {{gallery:N}}...{{/gallery}} blocks, strip size/location hints, and wrap in grid div."""
+    strip_hints = re.compile(
+        r'(!\[\[[^\]\n]+\.(?:jpg|jpeg|png|gif|svg))(?:\|\d+)?(?:x\d+)?(?:\|(?:left|right|center))?\]\]',
+        re.IGNORECASE
+    )
+    pattern = r'\{\{gallery:(\d+)\}\}(.*?)\{\{/gallery\}\}'
+
+    def make_gallery(match):
+        cols = match.group(1)
+        inner = strip_hints.sub(lambda m: m.group(1) + ']]', match.group(2).strip())
+        return f'<div class="grid grid-cols-{cols} gap-4">\n{inner}\n</div>'
+
+    return re.sub(pattern, make_gallery, content, flags=re.DOTALL)
+
+
+# %% ../nbs/05_blog_v5.ipynb #5befab34
+def preprocess_markdown(content: str, image_base: str) -> str:
+    content = process_gallery(content)
+    content = process_obsidian_images(content, image_base)
+    return content
 
 # %% ../nbs/05_blog_v5.ipynb #7ccb6366
 def process_you_tube_embed(page: NotStr):
@@ -895,30 +927,44 @@ https?://(?:www\.)?(?:youtu\.be/|youtube\.com/watch\?v=)(?P<index>[A-Za-z0-9_-]{
             page = page.replace(match.group(0), placeholder)
         return NotStr(page)
 
-# %% ../nbs/05_blog_v5.ipynb #2f09c5b6
+# %% ../nbs/05_blog_v5.ipynb #aab11f90
 def process_bunny_embed(page: NotStr, slug: str):
     page = str(page)
     pattern = r'''
-    (<p[^>]*>)? # find and capture <p> if it is there.  Allows for intermediate characters after p but only up to >
-    (\s*)? # Optional spaces between the tag and the start of the embedded code
-    \{\{bunny:(?P<name>[A-Za-z0-9_]+)(?P<suffix>(\.mp4|\.webm))\}\} # catch the brackets, the name of the file and the suffix
-    (\s*)?(</p>)? # Optional space after the brackets before the termination of the p tag
+    (<p[^>]*>)?
+    (\s*)?
+    \{\{bunny:(?P<path>[A-Za-z0-9_/-]*/)?(?P<name>[A-Za-z0-9_\-]+)(?P<suffix>(\.mp4|\.webm))\}\}
+    (\s*)?
+    (</p>)?
     '''
     
     def replace_bunny(match):
+        path = match['path'] or ''
         file_name = match['name']
         suffix = match['suffix']
-        video_type = match['suffix'][1:]
-        src = f"https://{config.CDN}/{file_name+suffix}"
-        poster_path = config.PROJECT_ROOT / config.POSTER_DIR / slug / Path(file_name+config.POSTER_SUFFIX + '.jpg')
+        video_type = suffix[1:]
+        
+        src = f"https://{config.CDN}/{path}{file_name}{suffix}"
+        
+        # Build poster path with flattened naming: folder_path_filename_poster.jpg
+        path_prefix = path.replace('/', '_') if path else ''
+        poster_name = f"{path_prefix}{file_name}{config.POSTER_SUFFIX}.jpg"
+        poster_dir = config.PROJECT_ROOT / config.POSTER_DIR / slug
+        poster_dir.mkdir(parents=True, exist_ok=True)
+        poster_path = poster_dir / poster_name
+        
+        if not poster_path.exists():
+            create_poster_image(src, poster_path)
+            
         with open(poster_path, 'rb') as f:
             raw_bytes = f.read()
         poster = f"data:image/jpeg;base64,{base64.b64encode(raw_bytes).decode()}"
-        ret_value = f'<video controls width="100%" poster="{poster}">\n  <source src="{src}" type="video/{video_type}">\n</video>'
-        return ret_value
+        
+        return f'<video controls width="100%" poster="{poster}">\n  <source src="{src}" type="video/{video_type}">\n</video>'
     
     page = re.sub(pattern, replace_bunny, page, flags=re.VERBOSE + re.MULTILINE)
     return NotStr(page)
+
 
 # %% ../nbs/05_blog_v5.ipynb #b47e6237
 @route('/sitemap.xml')

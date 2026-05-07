@@ -18,7 +18,7 @@ import re
 import frontmatter
 
 # %% ../nbs/06_admin.ipynb #f1d163d9
-from .core_v5 import (layout, render_md, EnhancedRenderer, process_obsidian_images, process_strava_embeddings, 
+from .core_v5 import (layout, render_md, EnhancedRenderer, process_obsidian_images, preprocess_markdown, process_strava_embeddings, 
     navbar, footer, hx_link, hx_attrs)
 
 # %% ../nbs/06_admin.ipynb #6c1c8d40
