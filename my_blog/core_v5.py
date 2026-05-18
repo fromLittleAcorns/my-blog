@@ -8,9 +8,8 @@ __all__ = ['yt_hdrs', 'AppState', 'create_database_tables', 'create_post_databas
            'get_post_image', 'check_if_admin', 'post_card', 'add_post', 'process_upload', 'create_poster_image',
            'create_save_poster', 'get', 'save_pending', 'load_pending', 'clear_pending', 'do_upload', 'post',
            'rewrite_image_paths', 'convert_obsidian_images', 'load_md_file', 'about_content', 'about',
-           'EnhancedRenderer', 'strava_embed', 'process_strava_embeddings', 'process_komoot_embed',
-           'process_obsidian_images', 'process_gallery', 'preprocess_markdown', 'process_you_tube_embed',
-           'process_bunny_embed', 'sitemap']
+           'EnhancedRenderer', 'strava_embed', 'process_strava_embeddings', 'process_komoot_embed', 'process_gallery',
+           'process_obsidian_images', 'preprocess_markdown', 'process_you_tube_embed', 'process_bunny_embed', 'sitemap']
 
 # %% ../nbs/05_blog_v5.ipynb #6a381e96
 from fastlite import Database
@@ -349,6 +348,7 @@ def blogpost(htmx, req, slug: str):
     image_base = f"/static/image/post_images/{slug}"
     content = preprocess_markdown(p['content'], image_base=image_base)
     content = render_md(content, renderer=EnhancedRenderer)
+    content = Div(content, uk_lightbox="animation: slide")
     content = process_strava_embeddings(content)
     content = process_komoot_embed(content)
     content = process_bunny_embed(content, slug)
@@ -839,6 +839,23 @@ def process_komoot_embed(page: NotStr):
     page = re.sub(pattern, replace_komoot, page)
     return NotStr(page)
 
+# %% ../nbs/05_blog_v5.ipynb #14861dcb
+def process_gallery(content: str) -> str:
+    """Find {{gallery:N}}...{{/gallery}} blocks, strip size/location hints, and wrap in grid div."""
+    strip_hints = re.compile(
+        r'(!\[\[[^\]\n]+\.(?:jpg|jpeg|png|gif|svg))(?:\|\d+)?(?:x\d+)?(?:\|(?:left|right|center))?\]\]',
+        re.IGNORECASE
+    )
+    pattern = r'\{\{gallery:(\d+)\}\}(.*?)\{\{/gallery\}\}'
+
+    def make_gallery(match):
+        cols = match.group(1)
+        inner = strip_hints.sub(lambda m: m.group(1) + ']]', match.group(2).strip())
+        return f'<div class="grid grid-cols-{cols} gap-4">\n{inner}\n</div>'
+
+    return re.sub(pattern, make_gallery, content, flags=re.DOTALL)
+
+
 # %% ../nbs/05_blog_v5.ipynb #907bde85
 def process_obsidian_images(content: str, image_base: str) -> str:
     pattern = r'''
@@ -868,35 +885,18 @@ def process_obsidian_images(content: str, image_base: str) -> str:
 
         caption = m.get('caption')
         if caption:
-            wrap_style = f' style="{"; ".join(wrap_styles)}"' if wrap_styles else ''
-            img_style = f' style="{"; ".join(img_styles)}"' if img_styles else ''
-            return (f'<figure{wrap_style}>\n'
-                    f'<img src="{src}"{img_style}>\n'
-                    f'<figcaption style="font-size:0.85em; color:#666; text-align:center">{caption.strip()}</figcaption>\n'
-                    f'</figure>')
+            fig_style = "; ".join(wrap_styles) if wrap_styles else None
+            img_tag = Img(src=src, style="; ".join(img_styles)) if img_styles else Img(src=src)
+            return str(Figure(style=fig_style)(
+                A(img_tag, href=src, data_type="image"),
+                Figcaption(caption.strip(), style="font-size:0.85em; color:#666; text-align:center")
+            ))
 
         all_styles = img_styles + wrap_styles
-        style = f' style="{"; ".join(all_styles)}"' if all_styles else ''
-        return f'<img src="{src}"{style}>'
+        img_tag = Img(src=src, style="; ".join(all_styles)) if all_styles else Img(src=src)
+        return str(A(img_tag, href=src, data_type="image"))
 
     return re.sub(pattern, make_element, content, flags=re.MULTILINE + re.VERBOSE)
-
-# %% ../nbs/05_blog_v5.ipynb #14861dcb
-def process_gallery(content: str) -> str:
-    """Find {{gallery:N}}...{{/gallery}} blocks, strip size/location hints, and wrap in grid div."""
-    strip_hints = re.compile(
-        r'(!\[\[[^\]\n]+\.(?:jpg|jpeg|png|gif|svg))(?:\|\d+)?(?:x\d+)?(?:\|(?:left|right|center))?\]\]',
-        re.IGNORECASE
-    )
-    pattern = r'\{\{gallery:(\d+)\}\}(.*?)\{\{/gallery\}\}'
-
-    def make_gallery(match):
-        cols = match.group(1)
-        inner = strip_hints.sub(lambda m: m.group(1) + ']]', match.group(2).strip())
-        return f'<div class="grid grid-cols-{cols} gap-4">\n{inner}\n</div>'
-
-    return re.sub(pattern, make_gallery, content, flags=re.DOTALL)
-
 
 # %% ../nbs/05_blog_v5.ipynb #5befab34
 def preprocess_markdown(content: str, image_base: str) -> str:
