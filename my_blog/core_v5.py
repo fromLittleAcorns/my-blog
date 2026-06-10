@@ -1,3 +1,108 @@
+"""### Notes regarding the blog approach
+
+The blog posts are currently prepared using Obscidian. This means that the saved markdown is not the default mistletoe but a variant.  In particular images are handled differently.  In Obscidian the format is ![[image_path]].  There is also an option to control the size of the image using a format such as ![[image_path|250]].  This is built into Obsidian and renders ok within their app.  I have then added a justification option which is left, center, right, as follows: ![[image_path|250|right]].
+
+In the process_upload function images are uploaded to a path using the post slug as a directory name.  The slug is generated from the post title changed to lowercase and spaces replaced by underscores, and then truncated at 60 characters.  Thus a post titled "A visit to Spain" would have a slug of "a_visit_to_spain" and the images would be places in a folder: static/image/post_images/a_visit_to_spain.
+
+When displaying a post, the markdown is rendered as normal. After rendering a function process_obsician_images is used to generate css for the images based upon the obscidian image definition as above.  A similar approach is taken to processing strava embeddings since Strava does not support iframes. Strava embeddings are encoded as {{strava:17555511761}}, where the number is the strava ride id.
+
+Core imports: `fastlite` for SQLite database, `fasthtml` and `monsterui` for web UI, `fasthtml_auth` for authentication, and `frontmatter` for parsing markdown with YAML metadata.
+
+`AppState` holds all shared application state: the posts database, table references, and auth manager. Passed around instead of using globals.
+
+Creates the three database tables: `Posts` (blog content), `Tags` (category names), and `PostTags` (many-to-many junction table linking posts to tags).
+
+Main app factory: initializes both databases, sets up authentication with `fasthtml-auth`, configures headers and static files, and returns the app plus an `AppState` instance.
+
+Route collector decorator. Stores routes in `_routes` list for later registration. Supports both `@route` (path from function name) and `@route('/custom/path')` syntax.
+
+Registers all routes collected by `@route` with the given app. Call this in your `app.py` after importing the module.
+
+Homepage intro section: returns an `Article` with welcome text and links to About and Blog pages using HTMX-enabled navigation.
+
+`hx_attrs` returns HTMX attributes for partial page updates. `hx_link` creates an anchor that uses both regular `href` and HTMX `hx-get` for SPA-like navigation.
+
+Navigation bar with brand logo/name on the left and page links (About, Blog) on the right. Uses flexbox for layout.
+
+Custom X (Twitter) icon as inline SVG—UIkit doesn't include the new X logo.
+
+`social_link` creates social media icon links with appropriate `rel` attributes for security. `footer` assembles the page footer with social icons.
+
+Page layout wrapper. On HTMX requests, returns just the content (for partial swap). On full page loads, wraps content with navbar and footer.
+
+Checks if a slug already exists in the database. Returns the post ID if found, `False` otherwise. Used for update-vs-insert logic.
+
+Creates or updates a post. Generates slug from title, handles tag creation/linking in the junction table. Updates existing posts if slug matches.
+
+Route to display a single blog post. Fetches by slug, parses the datetime, renders markdown content with `render_md`, processes Obsidian images and Strava embeds.
+
+Homepage route: displays intro section, a divider, and the latest posts as cards.
+
+Returns all tag names from the tags table as a list.
+
+Fetches all tags associated with a specific post via the `post_tags` junction table.
+
+Main post retrieval function. Optionally filters by tags and limits results. Returns dicts with parsed datetime and tag list attached.
+
+Creates a clickable tag button. Clicking adds/removes the tag from the current filter. Selected tags are styled differently.
+
+Builds the tag filter bar: all tag pills plus a "Clear" button to reset filters.
+
+Small styled badge for displaying a tag name on post cards.b
+
+Blog listing route. Parses tag filter from URL, fetches matching posts, renders tag filter + post cards. Uses HTMX OOB swap to update both filter and list on tag clicks.
+
+Extracts the first image path from a post's markdown content for use as a thumbnail.
+
+Renders a post summary card with title, excerpt, date, tags, and optional thumbnail. Entire card is clickable via HTMX.
+
+Processes uploaded files. For `.md` files: parses frontmatter, rewrites image paths, saves to database. For images: saves to post-specific subfolder.
+
+Admin upload handler (POST): processes markdown files first (to get slug), then images. Returns a results table showing success/failure for each file.
+
+Rewrites simple image filenames like `![](image.jpg)` to full paths like `![](/static/image/post_images/{slug}/image.jpg)`. Called at upload time.
+
+`convert_obsidian_images` converts Obsidian's `![[image.ext]]` syntax to standard markdown. `load_md_file` loads a markdown file and optionally converts image syntax.
+
+Loads and renders the About page from a markdown file, converting Obsidian image syntax to proper paths.
+
+Route to display the About page.
+
+#### Develop Markdown Renderer
+Note - for now strava, images and youtube embeddings will be handled by separate functions after page rendering.  At a later data this can be integrated into the EnhancedRenderer class once appropriate tokens are defined for each
+
+#### Develop Strava iFrame embedding
+In your markdown, use:
+`{{strava:12345678}}`
+This will be replaced with an embedded Strava activity
+
+Returns a Strava embed div with the given activity ID. The Strava embed.js script (loaded in headers) will transform this into a full embed.
+
+Post-processes rendered HTML to find `{{strava:ID}}` placeholders and replace them with actual Strava embed divs.
+
+#### Process Image Embeddings from Obscidian
+we can set image size, and justification within Obscidan using the nomenclature:
+
+![['image_name'|'size(w)'|'size(h)'|'justification']]
+
+where justification is optional and can be 'left'|'center'|'right'
+and size(w) and size(h) are optional (if only one is provided it will apply to the width)
+
+Obsidian image syntax examples:
+```
+![[image.jpg|300]]           - width 300px
+![[image.jpg|300|right]]     - float right, text wraps
+![[image.jpg|300x200|center]] - fixed size, centered
+```
+
+#### Develop iframe approach for youtube material
+Note that the you tube link must be on a separate line (in Obscidian this means a blank line above and below to force a `<p>, </p>` pair of tags)
+At present adding youtube playlists or time stamps is not supported
+
+Post-processes rendered HTML to find Obsidian image syntax `![[image.jpg|width|position]]` and replace with styled `<img>` tags. Supports width, height, and positioning (left/right/center).
+
+Docs: https://fromLittleAcorns.github.io/my-blogblog_v5.html.md"""
+
 # AUTOGENERATED! DO NOT EDIT! File to edit: ../nbs/05_blog_v5.ipynb.
 
 # %% auto #0
@@ -599,7 +704,8 @@ def process_upload(content: bytes, filename: str, slug:str=None, overwrite: bool
                 return 'confirm', "Post already exists. Overwrite?", slug
             try:
                 if overwrite:
-                    add_post(slug=slug, title=title, content=post.content, excerpt=excerpt, tags=tags, updated=updated, private=private)
+                    add_post(slug=slug, title=title, content=post.content, excerpt=excerpt, tags=tags, created=created,
+                    updated=updated, private=private)
                 else:
                     add_post(title=title, content=post.content, excerpt=excerpt, tags=tags, created=created, updated=updated, private=private)
             except Exception as e:
