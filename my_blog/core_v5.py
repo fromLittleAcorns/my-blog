@@ -114,7 +114,8 @@ __all__ = ['yt_hdrs', 'AppState', 'create_database_tables', 'create_post_databas
            'create_save_poster', 'get', 'save_pending', 'load_pending', 'clear_pending', 'do_upload', 'post',
            'rewrite_image_paths', 'convert_obsidian_images', 'load_md_file', 'about_content', 'about',
            'EnhancedRenderer', 'strava_embed', 'process_strava_embeddings', 'process_komoot_embed', 'process_gallery',
-           'process_obsidian_images', 'preprocess_markdown', 'process_you_tube_embed', 'process_bunny_embed', 'sitemap']
+           'process_obsidian_images', 'preprocess_markdown', 'process_you_tube_embed', 'process_bunny_embed',
+           'process_cdn_images', 'sitemap']
 
 # %% ../nbs/05_blog_v5.ipynb #6a381e96
 from fastlite import Database
@@ -451,8 +452,10 @@ def blogpost(htmx, req, slug: str):
         return layout(req, H2("Not Found"), P("Please login to access this post."), title="Private post", htmx=htmx)
     p['created'] = datetime.fromisoformat(p['created']) if isinstance(p['created'], str) else p['created']
     image_base = f"/static/image/post_images/{slug}"
+    # Firstly create the full image paths based upon the static image path and the slug
     content = preprocess_markdown(p['content'], image_base=image_base)
     content = render_md(content, renderer=EnhancedRenderer)
+    content = process_cdn_images(content)
     content = Div(content, uk_lightbox="animation: slide")
     content = process_strava_embeddings(content)
     content = process_komoot_embed(content)
@@ -947,7 +950,17 @@ def process_komoot_embed(page: NotStr):
 
 # %% ../nbs/05_blog_v5.ipynb #14861dcb
 def process_gallery(content: str) -> str:
-    """Find {{gallery:N}}...{{/gallery}} blocks, strip size/location hints, and wrap in grid div."""
+    """Find {{gallery:N}}...{{/gallery}} blocks, convert markdown images to <img> tags,
+    strip size hints, and wrap in grid div."""
+    
+    # First convert standard markdown images to <img> tags
+    md_img_pattern = r'!\[(?P<alt>[^\]]*)\]\((?P<url>[^)]+)\)'
+    
+    def md_to_img(match):
+        alt = match.group('alt')
+        url = match.group('url')
+        return f'<img src="{url}" alt="{alt}">'
+    
     strip_hints = re.compile(
         r'(!\[\[[^\]\n]+\.(?:jpg|jpeg|png|gif|svg))(?:\|\d+)?(?:x\d+)?(?:\|(?:left|right|center))?\]\]',
         re.IGNORECASE
@@ -956,10 +969,15 @@ def process_gallery(content: str) -> str:
 
     def make_gallery(match):
         cols = match.group(1)
-        inner = strip_hints.sub(lambda m: m.group(1) + ']]', match.group(2).strip())
+        inner = match.group(2).strip()
+        # Strip Obsidian size/location hints
+        inner = strip_hints.sub(lambda m: m.group(1) + ']]', inner)
+        # Convert standard markdown images to <img> tags
+        inner = re.sub(md_img_pattern, md_to_img, inner)
         return f'<div class="grid grid-cols-{cols} gap-4">\n{inner}\n</div>'
 
     return re.sub(pattern, make_gallery, content, flags=re.DOTALL)
+
 
 
 # %% ../nbs/05_blog_v5.ipynb #907bde85
@@ -1069,6 +1087,56 @@ def process_bunny_embed(page: NotStr, slug: str):
         return f'<video controls width="100%" poster="{poster}">\n  <source src="{src}" type="video/{video_type}">\n</video>'
     
     page = re.sub(pattern, replace_bunny, page, flags=re.VERBOSE + re.MULTILINE)
+    return NotStr(page)
+
+
+# %% ../nbs/05_blog_v5.ipynb #e3ee5ee0
+def process_cdn_images(page: NotStr) -> NotStr:
+    """Process <img> tags from CDN URLs.
+    Wraps in <a> with clean href for lightbox, moves size params to style,
+    and wraps with <figure>/<figcaption> if followed by a blockquote."""
+    page = str(page)
+    
+    # Match any img tag whose src contains the CDN domain
+    pattern = r'(<img\s+src="(https://' + re.escape(config.CDN) + r'/[^"]*)"([^>]*)>)\s*(<blockquote[^>]*>\s*<p[^>]*>([^<]+)</p>\s*</blockquote>)?'
+
+    def replace_img(match):
+        img_tag = match.group(1)
+        src = match.group(2)
+        rest = match.group(3)
+        caption_block = match.group(4)
+        caption_text = match.group(5)
+
+        # Split URL and query string
+        clean_url, _, query = src.partition('?')
+        params = dict(p.split('=') for p in query.split('&') if '=' in p) if query else {}
+
+        # Build styles from w/h params if present
+        styles = []
+        if 'w' in params: styles.append(f"width: {params['w']}px")
+        if 'h' in params: styles.append(f"height: {params['h']}px")
+        style_str = "; ".join(styles)
+
+        # Merge with any existing style attribute
+        if style_str:
+            if 'style="' in rest:
+                rest = rest.replace('style="', f'style="{style_str}; ')
+            else:
+                rest = f'{rest} style="{style_str}"'
+
+        # Build the new img tag
+        new_img = f'<img src="{src}"{rest}>'
+
+        # Wrap in <a> for lightbox
+        wrapped = f'<a href="{clean_url}">{new_img}</a>'
+
+        # If there's a caption, wrap in figure
+        if caption_block:
+            return f'<figure>\n{wrapped}\n<figcaption style="font-size:0.85em; color:#666; text-align:center">{caption_text.strip()}</figcaption>\n</figure>'
+        
+        return wrapped
+
+    page = re.sub(pattern, replace_img, page)
     return NotStr(page)
 
 
